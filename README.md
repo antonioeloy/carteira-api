@@ -1,8 +1,6 @@
-<!--
 <h1 align="center">
   <img alt="banner" title="banner" src="banner.png" />
 </h1>
--->
 
 # :computer: carteira-api
 API REST com Spring Boot para um sistema de registro de transações no mercado financeiro.
