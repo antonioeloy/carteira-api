@@ -9,6 +9,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import br.com.alura.carteira.modelo.TipoTransacao;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +31,7 @@ public class TransacaoFormDto {
 	private int quantidade;
 	
 	@PastOrPresent
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate data;
 	
 	@NotNull
