@@ -36,5 +36,8 @@ public class TransacaoFormDto {
 	
 	@NotNull
 	private TipoTransacao tipo;
+	
+	@NotNull
+	private Long usuarioId;
 
 }
