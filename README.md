@@ -72,13 +72,21 @@ $ docker-compose up
         "ticker": "CVCB3",
         "preco": 23.14,
         "quantidade": 100,
-        "tipo": "COMPRA"
+        "tipo": "COMPRA",
+        "usuario": {
+            "nome": "Antonio Eloy de Oliveira Araujo",
+            "login": "antonio.araujo"
+        }
     },
     {
         "ticker": "ITUB4",
         "preco": 29.67,
         "quantidade": 200,
-        "tipo": "VENDA"
+        "tipo": "VENDA",
+        "usuario": {
+            "nome": "Maiana Souza Azevedo",
+            "login": "maiana.azevedo"
+        }
     }
 ]
 ```
@@ -90,7 +98,8 @@ $ docker-compose up
     "preco": 29.67,
     "quantidade": 200,
     "data": "02/10/2021",
-    "tipo": "VENDA"
+    "tipo": "VENDA",
+    "usuarioId": 1
 }
 ```
 
