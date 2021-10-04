@@ -29,6 +29,7 @@ public class TransacaoService {
 	}
 
 	public void cadastrar(TransacaoFormDto transacaoFormDto) {
+		modelMapper.typeMap(TransacaoFormDto.class, Transacao.class).addMappings(mapper -> mapper.skip(Transacao::setId));
 		Transacao transacao = modelMapper.map(transacaoFormDto, Transacao.class);
 		transacaoRepository.save(transacao);
 	}
