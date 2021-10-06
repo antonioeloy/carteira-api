@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,6 +22,7 @@ public class TransacaoFormDto {
 
 	@NotBlank
 	@Size(min = 5, max = 6)
+	@Pattern(regexp = "[a-zA-z]{4}[0-9][0-9]?")
 	private String ticker;
 	
 	@NotNull
