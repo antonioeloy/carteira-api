@@ -26,10 +26,11 @@ public class TransacaoService {
 	}
 
 	@Transactional
-	public void cadastrar(TransacaoFormDto transacaoFormDto) {
+	public TransacaoDto cadastrar(TransacaoFormDto transacaoFormDto) {
 		modelMapper.typeMap(TransacaoFormDto.class, Transacao.class).addMappings(mapper -> mapper.skip(Transacao::setId));
 		Transacao transacao = modelMapper.map(transacaoFormDto, Transacao.class);
 		transacaoRepository.save(transacao);
+		return modelMapper.map(transacao, TransacaoDto.class);
 	}
 
 }

@@ -28,7 +28,7 @@ public class TransacaoFormDto {
 	
 	@NotNull
 	@Min(1)
-	private int quantidade;
+	private Integer quantidade;
 	
 	@PastOrPresent
 	@JsonFormat(pattern = "dd/MM/yyyy")
