@@ -32,6 +32,7 @@ As seguintes ferramentas são utilizadas no desenvolvimento deste projeto:
 - [Spring Boot Starter Data JPA](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa)
 - [Spring Boot Starter Test](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test)
 - [Spring Boot DevTools](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools)
+- [Flyway](https://flywaydb.org/)
 - [Lombok](https://projectlombok.org/)
 - [ModelMapper](http://modelmapper.org/)
 - [Maven](https://maven.apache.org/)
