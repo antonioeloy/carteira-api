@@ -1,7 +1,15 @@
 version: '3.6'
-services:   
+services:
+    mysqldb:
+        image: mysql:8.0
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=carteira
+        ports:
+            - 3306:3306
     application:
         build: .
         ports:
             - 8080:8080
-        
+        depends_on:
+            - mysqldb

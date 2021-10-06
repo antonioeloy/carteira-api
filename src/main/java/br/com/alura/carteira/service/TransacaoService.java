@@ -19,7 +19,7 @@ public class TransacaoService {
 	private TransacaoRepository transacaoRepository;
 
 	private ModelMapper modelMapper = new ModelMapper();
-	
+
 	public Page<TransacaoDto> listar(Pageable paginacao) {
 		Page<Transacao> transacoes = transacaoRepository.findAll(paginacao);
 		return transacoes.map(t -> modelMapper.map(t, TransacaoDto.class));
