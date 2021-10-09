@@ -46,6 +46,7 @@ As seguintes ferramentas são utilizadas no desenvolvimento deste projeto:
 - [x] Cadastro de usuários
 - [x] Listagem de transações
 - [x] Listagem de usuários
+- [x] Relatório de itens da carteira de investimentos 
 
 <a name="requisitos"/></a>
 ### :pencil: Pré-requisitos
@@ -72,30 +73,58 @@ $ docker-compose up
 <a name="testando"/></a>
 ### :gear: Testando a aplicação
 
-- <strong>GET localhost:8080/transacoes</strong> --> retorna a lista de transações.
+- <strong>GET localhost:8080/transacoes</strong> --> retorna a lista de transações (com paginação).
 ```json
-[
-    {
-        "ticker": "CVCB3",
-        "preco": 23.14,
-        "quantidade": 100,
-        "tipo": "COMPRA",
-        "usuario": {
-            "nome": "Antonio Eloy de Oliveira Araujo",
-            "login": "antonio.araujo"
+{
+    "content": [
+        {
+            "id": 1,
+            "ticker": "CVCB3",
+            "preco": 40.50,
+            "quantidade": 120,
+            "tipo": "COMPRA"
+        },
+        {
+            "id": 2,
+            "ticker": "ITUB4",
+            "preco": 29.50,
+            "quantidade": 80,
+            "tipo": "COMPRA"
+        },
+        {
+            "id": 3,
+            "ticker": "BBDC4",
+            "preco": 19.50,
+            "quantidade": 50,
+            "tipo": "COMPRA"
         }
+    ],
+    "pageable": {
+        "sort": {
+            "unsorted": true,
+            "sorted": false,
+            "empty": true
+        },
+        "offset": 0,
+        "pageSize": 5,
+        "pageNumber": 0,
+        "unpaged": false,
+        "paged": true
     },
-    {
-        "ticker": "ITUB4",
-        "preco": 29.67,
-        "quantidade": 200,
-        "tipo": "VENDA",
-        "usuario": {
-            "nome": "Maiana Souza Azevedo",
-            "login": "maiana.azevedo"
-        }
-    }
-]
+    "last": true,
+    "totalPages": 1,
+    "totalElements": 3,
+    "size": 5,
+    "number": 0,
+    "sort": {
+        "unsorted": true,
+        "sorted": false,
+        "empty": true
+    },
+    "first": true,
+    "numberOfElements": 3,
+    "empty": false
+}
 ```
 
 - <strong>POST localhost:8080/transacoes</strong> --> cadastra uma nova transação.
@@ -110,26 +139,71 @@ $ docker-compose up
 }
 ```
 
-- <strong>GET localhost:8080/usuarios</strong> --> retorna a lista de usuários.
+- <strong>GET localhost:8080/usuarios</strong> --> retorna a lista de usuários (com paginação).
 ```json
-[
-    {
-        "nome": "Antonio Eloy de Oliveira Araujo",
-        "login": "antonio.araujo"
+{
+    "content": [
+        {
+            "id": 1,
+            "nome": "Antonio Eloy",
+            "login": "antonio.eloy"
+        }
+    ],
+    "pageable": {
+        "sort": {
+            "unsorted": true,
+            "sorted": false,
+            "empty": true
+        },
+        "offset": 0,
+        "pageSize": 5,
+        "pageNumber": 0,
+        "unpaged": false,
+        "paged": true
     },
-    {
-        "nome": "Maiana Souza Azevedo",
-        "login": "maiana.azevedo"
-    }
-]
+    "last": true,
+    "totalPages": 1,
+    "totalElements": 1,
+    "size": 5,
+    "number": 0,
+    "sort": {
+        "unsorted": true,
+        "sorted": false,
+        "empty": true
+    },
+    "first": true,
+    "numberOfElements": 1,
+    "empty": false
+}
 ```
 
 - <strong>POST localhost:8080/usuarios</strong> --> cadastra um novo usuário.
 ```json
 {
-    "nome": "Antonio Eloy de Oliveira Araujo",
-    "login": "antonio.araujo"
+    "nome": "Antonio Eloy",
+    "login": "antonio.eloy"
 }
+```
+
+- <strong>GET localhost:8080/relatorios/carteira</strong> --> retorna o relatório dos itens da carteira de investimentos.
+```json
+[
+    {
+        "ticker": "CVCB3",
+        "quantidade": 120,
+        "percentual": 0.48
+    },
+    {
+        "ticker": "ITUB4",
+        "quantidade": 80,
+        "percentual": 0.32
+    },
+    {
+        "ticker": "BBDC4",
+        "quantidade": 50,
+        "percentual": 0.2
+    }
+]
 ```
 
 <a name="licenca"/></a>
