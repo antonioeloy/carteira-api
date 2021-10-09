@@ -29,6 +29,7 @@ public class UsuarioService {
 
 	@Transactional
 	public UsuarioDto cadastrar(UsuarioFormDto usuarioFormDto) {
+		modelMapper.typeMap(UsuarioFormDto.class, Usuario.class).addMappings(mapper -> mapper.skip(Usuario::setId));
 		Usuario usuario = modelMapper.map(usuarioFormDto, Usuario.class);
 		String senha = new Random().nextInt(100000) + "";
 		usuario.setSenha(senha);
