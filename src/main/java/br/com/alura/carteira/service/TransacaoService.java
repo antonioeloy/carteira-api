@@ -10,13 +10,18 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.alura.carteira.dto.TransacaoDto;
 import br.com.alura.carteira.dto.TransacaoFormDto;
 import br.com.alura.carteira.modelo.Transacao;
+import br.com.alura.carteira.modelo.Usuario;
 import br.com.alura.carteira.repository.TransacaoRepository;
+import br.com.alura.carteira.repository.UsuarioRepository;
 
 @Service
 public class TransacaoService {
 	
 	@Autowired
 	private TransacaoRepository transacaoRepository;
+	
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 
 	private ModelMapper modelMapper = new ModelMapper();
 
@@ -27,9 +32,14 @@ public class TransacaoService {
 
 	@Transactional
 	public TransacaoDto cadastrar(TransacaoFormDto transacaoFormDto) {
+		Usuario usuario = usuarioRepository.getById(transacaoFormDto.getUsuarioId());
+		
 		modelMapper.typeMap(TransacaoFormDto.class, Transacao.class).addMappings(mapper -> mapper.skip(Transacao::setId));
 		Transacao transacao = modelMapper.map(transacaoFormDto, Transacao.class);
+		transacao.setUsuario(usuario);
+		
 		transacaoRepository.save(transacao);
+		
 		return modelMapper.map(transacao, TransacaoDto.class);
 	}
 
