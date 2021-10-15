@@ -12,8 +12,8 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
 
 	@Query("select new br.com.alura.carteira.dto.ItemCarteiraDto("
 			+ "t1.ticker, "
-			+ "sum(t1.quantidade), "
-			+ "(sum(t1.quantidade) / (select sum(t2.quantidade) from Transacao t2))*1.0) "
+			+ "sum(CASE WHEN (t1.tipo = 'COMPRA') THEN t1.quantidade ELSE (t1.quantidade * -1) END), "
+			+ "(select sum(CASE WHEN (t2.tipo = 'COMPRA') THEN t2.quantidade ELSE (t2.quantidade * -1) END) from Transacao t2)) "
 			+ "from Transacao t1 "
 			+ "group by t1.ticker")
 	public List<ItemCarteiraDto> relatorioCarteiraDeInvestimentos();

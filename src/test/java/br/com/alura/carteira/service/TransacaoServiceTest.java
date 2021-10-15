@@ -32,10 +32,8 @@ class TransacaoServiceTest {
 	
 	@InjectMocks
 	private TransacaoService transacaoService;
-
-	@Test
-	void transacaoDeveSerCadastrada() {
-		
+	
+	private TransacaoFormDto criarTransacaoFormDto() {
 		TransacaoFormDto transacaoFormDto = new TransacaoFormDto(
 				"ITSA4",
 				new BigDecimal("45.20"),
@@ -44,8 +42,17 @@ class TransacaoServiceTest {
 				TipoTransacao.COMPRA,
 				1L
 				);
+		return transacaoFormDto;
+	}
+
+	@Test
+	void transacaoDeveSerCadastrada() {
+		
+		TransacaoFormDto transacaoFormDto = criarTransacaoFormDto();
 		
 		TransacaoDto transacaoDto = transacaoService.cadastrar(transacaoFormDto);
+		
+		Mockito.verify(transacaoRepository).save(Mockito.any());
 		
 		assertEquals(transacaoFormDto.getTicker(), transacaoDto.getTicker());
 		assertEquals(transacaoFormDto.getPreco(), transacaoDto.getPreco());
@@ -57,14 +64,7 @@ class TransacaoServiceTest {
 	@Test
 	void transacaoNaoDeveSerCadastradaPoisUsuarioNaoExiste() {
 		
-		TransacaoFormDto transacaoFormDto = new TransacaoFormDto(
-				"ITSA4",
-				new BigDecimal("45.20"),
-				150,
-				LocalDate.now(),
-				TipoTransacao.COMPRA,
-				100L
-				);
+		TransacaoFormDto transacaoFormDto = criarTransacaoFormDto();
 		
 		Mockito
 		.when(usuarioRepository.getById(transacaoFormDto.getUsuarioId()))
