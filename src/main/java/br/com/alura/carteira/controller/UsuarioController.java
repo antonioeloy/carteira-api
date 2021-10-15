@@ -19,21 +19,26 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.alura.carteira.dto.UsuarioDto;
 import br.com.alura.carteira.dto.UsuarioFormDto;
 import br.com.alura.carteira.service.UsuarioService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/usuarios")
+@Api(tags = "Usuário")
 public class UsuarioController {
 	
 	@Autowired
 	UsuarioService usuarioService;
 	
 	@GetMapping
+	@ApiOperation("Listar usuários")
 	public Page<UsuarioDto> listar (@PageableDefault(size = 5) Pageable paginacao) {
 		Page<UsuarioDto> usuarios = usuarioService.listar(paginacao);
 		return usuarios;
 	}
 	
 	@PostMapping
+	@ApiOperation("Cadastrar um usuário")
 	public ResponseEntity<UsuarioDto> cadastrar(@RequestBody @Valid UsuarioFormDto usuarioFormDto,
 			UriComponentsBuilder uriBuilder) {
 		UsuarioDto usuarioDto = usuarioService.cadastrar(usuarioFormDto);

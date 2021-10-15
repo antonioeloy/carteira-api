@@ -96,6 +96,27 @@
 <!-- 		    <groupId>com.h2database</groupId> -->
 <!-- 		    <artifactId>h2</artifactId> -->
 <!-- 		</dependency> -->
+
+		<!-- Springfox implementation of the Swagger specification  -->
+		<dependency>
+		    <groupId>io.springfox</groupId>
+		    <artifactId>springfox-swagger2</artifactId>
+		    <version>3.0.0</version>
+		</dependency>
+		
+		<!-- Springfox Boot Starter -->
+		<dependency>
+		    <groupId>io.springfox</groupId>
+		    <artifactId>springfox-boot-starter</artifactId>
+		    <version>3.0.0</version>
+		</dependency>
+		
+		<!-- Springfox Swagger UI -->
+		<dependency>
+		    <groupId>io.springfox</groupId>
+		    <artifactId>springfox-swagger-ui</artifactId>
+		    <version>2.9.2</version>
+		</dependency>
 		
 	</dependencies>
 
