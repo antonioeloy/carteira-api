@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.alura.carteira.dto.TransacaoDetalhadaDto;
 import br.com.alura.carteira.dto.TransacaoDto;
 import br.com.alura.carteira.dto.TransacaoFormDto;
 import br.com.alura.carteira.modelo.Transacao;
@@ -33,7 +34,7 @@ public class TransacaoService {
 	}
 
 	@Transactional
-	public TransacaoDto cadastrar(TransacaoFormDto transacaoFormDto) {
+	public TransacaoDetalhadaDto cadastrar(TransacaoFormDto transacaoFormDto) {
 		
 		try {
 			
@@ -45,11 +46,43 @@ public class TransacaoService {
 			
 			transacaoRepository.save(transacao);
 			
-			return modelMapper.map(transacao, TransacaoDto.class);
+			return modelMapper.map(transacao, TransacaoDetalhadaDto.class);
 			
-		} catch (EntityNotFoundException ex1) {
+		} catch (EntityNotFoundException ex) {
 			throw new IllegalArgumentException("Usuário inexistente");
 		}
+	}
+
+	@Transactional
+	public TransacaoDto atualizar(Long id, TransacaoFormDto transacaoFormDto) {
+		
+		Transacao transacao = transacaoRepository.getById(id);	
+		transacao.atualizar(
+				transacaoFormDto.getTicker(),
+				transacaoFormDto.getPreco(),
+				transacaoFormDto.getQuantidade(),
+				transacaoFormDto.getData(),
+				transacaoFormDto.getTipo()
+				);
+		transacaoRepository.save(transacao);
+		
+		return modelMapper.map(transacao, TransacaoDto.class);
+		
+	}
+
+	@Transactional
+	public void remover(Long id) {	
+		transacaoRepository.deleteById(id);
+	}
+
+	public TransacaoDetalhadaDto detalhar(Long id) {
+		
+		Transacao transacao = transacaoRepository.
+				findById(id)
+				.orElseThrow(() -> new EntityNotFoundException());
+		
+		return modelMapper.map(transacao, TransacaoDetalhadaDto.class);
+		
 	}
 
 }
