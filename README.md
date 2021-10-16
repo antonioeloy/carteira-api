@@ -23,7 +23,7 @@ Em desenvolvimento.
 <a name="tecnologias"/></a>
 ### :hammer_and_wrench: Tecnologias
 
-As seguintes ferramentas são utilizadas no desenvolvimento deste projeto:
+As seguintes tecnologias e ferramentas são utilizadas no desenvolvimento deste projeto:
 
 - [Java](https://www.oracle.com/java/)
 - [Spring Boot](https://spring.io/projects/spring-boot)
@@ -32,6 +32,7 @@ As seguintes ferramentas são utilizadas no desenvolvimento deste projeto:
 - [Spring Boot Starter Data JPA](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa)
 - [Spring Boot Starter Test](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test)
 - [Spring Boot DevTools](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools)
+- [Springfox Swagger](http://springfox.github.io/springfox/)
 - [Flyway](https://flywaydb.org/)
 - [Lombok](https://projectlombok.org/)
 - [ModelMapper](http://modelmapper.org/)
@@ -42,11 +43,16 @@ As seguintes ferramentas são utilizadas no desenvolvimento deste projeto:
 
 <a name="features"/></a>
 ### :page_with_curl: Features
-- [x] Cadastro de transações
-- [x] Cadastro de usuários
-- [x] Listagem de transações
-- [x] Listagem de usuários
-- [x] Relatório de itens da carteira de investimentos 
+- [x] Listar transações
+- [x] Cadastrar uma transação
+- [x] Atualizar uma transação
+- [x] Remover uma transação
+- [x] Detalhar uma transação
+- [x] Listar usuários     
+- [x] Cadastrar um usuário
+- [x] Atualizar um usuário
+- [x] Retornar um usuário  
+- [x] Gerar relatório de itens da carteira de investimentos 
 
 <a name="requisitos"/></a>
 ### :pencil: Pré-requisitos
@@ -55,8 +61,6 @@ Antes de começar, você precisa ter instalado em sua máquina as seguintes ferr
 - [Git](https://git-scm.com/)
 - [Docker](https://www.docker.com/)
 
-Além disso, você deve utilizar uma ferramenta para testar a API, como, por exemplo, o [Postman](https://www.postman.com/).
-
 <a name="executando"/></a>
 ### :rocket: Executando a aplicação
 
@@ -64,7 +68,7 @@ Além disso, você deve utilizar uma ferramenta para testar a API, como, por exe
 # Clone este repositório
 $ git clone https://github.com/antonioeloy/carteira-api.git
 
-# Execute o container da aplicação
+# Na pasta raiz do projeto, execute os contêineres da aplicação
 $ docker-compose up
 
 # A aplicação iniciará na porta 8080
@@ -73,137 +77,10 @@ $ docker-compose up
 <a name="testando"/></a>
 ### :gear: Testando a aplicação
 
-- <strong>GET localhost:8080/transacoes</strong> --> retorna a lista de transações (com paginação).
-```json
-{
-    "content": [
-        {
-            "id": 1,
-            "ticker": "CVCB3",
-            "preco": 40.50,
-            "quantidade": 120,
-            "tipo": "COMPRA"
-        },
-        {
-            "id": 2,
-            "ticker": "ITUB4",
-            "preco": 29.50,
-            "quantidade": 80,
-            "tipo": "COMPRA"
-        },
-        {
-            "id": 3,
-            "ticker": "BBDC4",
-            "preco": 19.50,
-            "quantidade": 50,
-            "tipo": "COMPRA"
-        }
-    ],
-    "pageable": {
-        "sort": {
-            "unsorted": true,
-            "sorted": false,
-            "empty": true
-        },
-        "offset": 0,
-        "pageSize": 5,
-        "pageNumber": 0,
-        "unpaged": false,
-        "paged": true
-    },
-    "last": true,
-    "totalPages": 1,
-    "totalElements": 3,
-    "size": 5,
-    "number": 0,
-    "sort": {
-        "unsorted": true,
-        "sorted": false,
-        "empty": true
-    },
-    "first": true,
-    "numberOfElements": 3,
-    "empty": false
-}
-```
+Para testar a API, basta acessar a documentação gerada com a biblioteca [Springfox Swagger](http://springfox.github.io/springfox/).
 
-- <strong>POST localhost:8080/transacoes</strong> --> cadastra uma nova transação.
-```json
-{
-    "ticker": "ITUB4",
-    "preco": 29.67,
-    "quantidade": 200,
-    "data": "02/10/2021",
-    "tipo": "VENDA",
-    "usuarioId": 1
-}
 ```
-
-- <strong>GET localhost:8080/usuarios</strong> --> retorna a lista de usuários (com paginação).
-```json
-{
-    "content": [
-        {
-            "id": 1,
-            "nome": "Antonio Eloy",
-            "login": "antonio.eloy"
-        }
-    ],
-    "pageable": {
-        "sort": {
-            "unsorted": true,
-            "sorted": false,
-            "empty": true
-        },
-        "offset": 0,
-        "pageSize": 5,
-        "pageNumber": 0,
-        "unpaged": false,
-        "paged": true
-    },
-    "last": true,
-    "totalPages": 1,
-    "totalElements": 1,
-    "size": 5,
-    "number": 0,
-    "sort": {
-        "unsorted": true,
-        "sorted": false,
-        "empty": true
-    },
-    "first": true,
-    "numberOfElements": 1,
-    "empty": false
-}
-```
-
-- <strong>POST localhost:8080/usuarios</strong> --> cadastra um novo usuário.
-```json
-{
-    "nome": "Antonio Eloy",
-    "login": "antonio.eloy"
-}
-```
-
-- <strong>GET localhost:8080/relatorios/carteira</strong> --> retorna o relatório dos itens da carteira de investimentos.
-```json
-[
-    {
-        "ticker": "CVCB3",
-        "quantidade": 120,
-        "percentual": 0.48
-    },
-    {
-        "ticker": "ITUB4",
-        "quantidade": 80,
-        "percentual": 0.32
-    },
-    {
-        "ticker": "BBDC4",
-        "quantidade": 50,
-        "percentual": 0.2
-    }
-]
+http://localhost:8080/swagger-ui.html
 ```
 
 <a name="licenca"/></a>
