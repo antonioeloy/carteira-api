@@ -38,4 +38,9 @@ public class Usuario {
 		this.senha = senha;
 	}
 
+	public void atualizar(String nome, String login) {
+		this.nome = nome;
+		this.login = login;
+	}
+
 }

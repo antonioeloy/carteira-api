@@ -2,6 +2,8 @@ package br.com.alura.carteira.service;
 
 import java.util.Random;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,6 +36,24 @@ public class UsuarioService {
 		String senha = new Random().nextInt(100000) + "";
 		usuario.setSenha(senha);
 		usuarioRepository.save(usuario);
+		return modelMapper.map(usuario, UsuarioDto.class);
+	}
+
+	@Transactional
+	public UsuarioDto atualizar(Long id, UsuarioFormDto usuarioFormDto) {
+		Usuario usuario = usuarioRepository.getById(id);
+		usuario.atualizar(
+				usuarioFormDto.getNome(), 
+				usuarioFormDto.getLogin()
+				);
+		usuarioRepository.save(usuario);
+		return modelMapper.map(usuario, UsuarioDto.class);
+	}
+
+	public UsuarioDto retornar(Long id) {
+		Usuario usuario = usuarioRepository
+				.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException());
 		return modelMapper.map(usuario, UsuarioDto.class);
 	}
 

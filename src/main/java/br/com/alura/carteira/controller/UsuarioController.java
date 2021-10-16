@@ -10,7 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,6 +49,20 @@ public class UsuarioController {
 				.buildAndExpand(usuarioDto.getId())
 				.toUri();
 		return ResponseEntity.created(uri).body(usuarioDto);
+	}
+	
+	@PutMapping("/{id}")
+	@ApiOperation("Atualizar um usuário")
+	public ResponseEntity<UsuarioDto> atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioFormDto usuarioFormDto) {
+		UsuarioDto usuarioDto = usuarioService.atualizar(id, usuarioFormDto);
+		return ResponseEntity.ok(usuarioDto);
+	}
+	
+	@GetMapping("/{id}")
+	@ApiOperation("Retornar um usuário")
+	public ResponseEntity<UsuarioDto> retornar(@PathVariable Long id) {
+		UsuarioDto usuarioDto = usuarioService.retornar(id);
+		return ResponseEntity.ok(usuarioDto);
 	}
 
 }
