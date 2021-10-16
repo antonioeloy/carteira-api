@@ -83,6 +83,10 @@ Para testar a API, basta acessar a documentação gerada com a biblioteca [Sprin
 http://localhost:8080/swagger-ui.html
 ```
 
+<h1 align="center">
+  <img alt="documentacao" title="documentacao" src="documentacao_api.PNG" />
+</h1>
+
 <a name="licenca"/></a>
 ### :copyright: Licença
 
