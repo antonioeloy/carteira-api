@@ -21,7 +21,7 @@ public class RelatoriosController {
 	private RelatorioService relatorioService;
 
 	@GetMapping("/carteira")
-	@ApiOperation("Lista de itens da carteira de investimentos")
+	@ApiOperation("Listar itens da carteira de investimentos")
 	public List<ItemCarteiraDto> relatorioCarteiraDeInvestimentos() {
 		return relatorioService.relatorioCarteiraDeInvestimentos();
 	}
