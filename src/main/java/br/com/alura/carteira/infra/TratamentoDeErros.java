@@ -46,7 +46,7 @@ public class TratamentoDeErros {
 	public void tratarErro404() {
 	}
 	
-	@ExceptionHandler({RuntimeException.class})
+	@ExceptionHandler({IllegalArgumentException.class})
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	public ErroRequisicaoInvalidaDto tratarErroRequisicaoInvalida(Exception ex) {
 		return new ErroRequisicaoInvalidaDto(ex.getMessage());
