@@ -75,7 +75,7 @@ class UsuarioServiceTest {
 		.when(usuarioRepository.findByLogin(usuarioFormDto.getLogin()))
 		.thenReturn(criarOptionalUsuario());
 		
-		assertThrows(RuntimeException.class, () -> usuarioService.cadastrar(usuarioFormDto));
+		assertThrows(IllegalArgumentException.class, () -> usuarioService.cadastrar(usuarioFormDto));
 		
 	}
 	
@@ -185,7 +185,7 @@ class UsuarioServiceTest {
 		.when(usuarioRepository.findById(idUsuario))
 		.thenReturn(usuarioOptional);
 		
-		assertThrows(RuntimeException.class, () -> usuarioService.remover(idUsuario));
+		assertThrows(IllegalArgumentException.class, () -> usuarioService.remover(idUsuario));
 		
 	}
 
