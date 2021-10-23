@@ -31,11 +31,24 @@ public class UsuarioService {
 
 	@Transactional
 	public UsuarioDto cadastrar(UsuarioFormDto usuarioFormDto) {
+		Boolean loginEmUso = usuarioRepository.findByLogin(usuarioFormDto.getLogin())
+				.stream()
+				.anyMatch(usuario -> usuario.getLogin().equals(usuarioFormDto.getLogin()));
+		if (loginEmUso) {
+			throw new RuntimeException("O login informado já está em uso");
+		}
 		modelMapper.typeMap(UsuarioFormDto.class, Usuario.class).addMappings(mapper -> mapper.skip(Usuario::setId));
 		Usuario usuario = modelMapper.map(usuarioFormDto, Usuario.class);
 		String senha = new Random().nextInt(100000) + "";
 		usuario.setSenha(senha);
 		usuarioRepository.save(usuario);
+		return modelMapper.map(usuario, UsuarioDto.class);
+	}
+	
+	public UsuarioDto retornar(Long id) {
+		Usuario usuario = usuarioRepository
+				.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException());
 		return modelMapper.map(usuario, UsuarioDto.class);
 	}
 
@@ -50,26 +63,15 @@ public class UsuarioService {
 		return modelMapper.map(usuario, UsuarioDto.class);
 	}
 
-	public UsuarioDto retornar(Long id) {
-		Usuario usuario = usuarioRepository
-				.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException());
-		return modelMapper.map(usuario, UsuarioDto.class);
-	}
-
 	@Transactional
-	public void remover(Long id) {
-		
+	public void remover(Long id) {	
 		Usuario usuario = usuarioRepository
 				.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException());
-		
 		if (!usuario.getTransacoes().isEmpty()) {
 			throw new RuntimeException("Um usuário só pode ser excluído se não tiver transações cadastradas");
 		}
-		
 		usuarioRepository.deleteById(id);
-		
 	}
 
 }

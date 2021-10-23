@@ -1,5 +1,6 @@
 package br.com.alura.carteira.modelo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -34,7 +35,7 @@ public class Usuario {
 	private String login;
 	
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-	private List<Transacao> transacoes;
+	private List<Transacao> transacoes = new ArrayList<>();
 	
 	@Exclude
 	private String senha;
