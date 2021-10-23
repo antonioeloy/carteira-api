@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import br.com.alura.carteira.dto.Erro400Dto;
 import br.com.alura.carteira.dto.Erro500Dto;
+import br.com.alura.carteira.dto.ErroRequisicaoInvalidaDto;
 
 @RestControllerAdvice
 public class TratamentoDeErros {
@@ -43,6 +44,12 @@ public class TratamentoDeErros {
 	@ExceptionHandler({EntityNotFoundException.class, EmptyResultDataAccessException.class})
 	@ResponseStatus(code = HttpStatus.NOT_FOUND)
 	public void tratarErro404() {
+	}
+	
+	@ExceptionHandler({RuntimeException.class})
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	public ErroRequisicaoInvalidaDto tratarErroRequisicaoInvalida(Exception ex) {
+		return new ErroRequisicaoInvalidaDto(ex.getMessage());
 	}
 
 }

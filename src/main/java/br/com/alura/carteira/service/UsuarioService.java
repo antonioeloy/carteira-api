@@ -57,4 +57,19 @@ public class UsuarioService {
 		return modelMapper.map(usuario, UsuarioDto.class);
 	}
 
+	@Transactional
+	public void remover(Long id) {
+		
+		Usuario usuario = usuarioRepository
+				.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException());
+		
+		if (!usuario.getTransacoes().isEmpty()) {
+			throw new RuntimeException("Um usuário só pode ser excluído se não tiver transações cadastradas");
+		}
+		
+		usuarioRepository.deleteById(id);
+		
+	}
+
 }
