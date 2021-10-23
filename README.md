@@ -51,7 +51,8 @@ As seguintes tecnologias e ferramentas são utilizadas no desenvolvimento deste 
 - [x] Listar usuários     
 - [x] Cadastrar um usuário
 - [x] Atualizar um usuário
-- [x] Retornar um usuário  
+- [x] Retornar um usuário
+- [x] Remover um usuário   
 - [x] Gerar relatório de itens da carteira de investimentos 
 
 <a name="requisitos"/></a>
