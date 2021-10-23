@@ -72,7 +72,11 @@ public class TransacaoService {
 
 	@Transactional
 	public void remover(Long id) {	
-		transacaoRepository.deleteById(id);
+		Transacao transacao = transacaoRepository.
+				findById(id)
+				.orElseThrow(() -> new EntityNotFoundException());
+		
+		transacaoRepository.delete(transacao);
 	}
 
 	public TransacaoDetalhadaDto detalhar(Long id) {
