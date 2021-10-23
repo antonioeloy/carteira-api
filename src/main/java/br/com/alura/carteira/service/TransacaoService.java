@@ -52,6 +52,16 @@ public class TransacaoService {
 			throw new IllegalArgumentException("Usuário inexistente");
 		}
 	}
+	
+	public TransacaoDetalhadaDto detalhar(Long id) {
+		
+		Transacao transacao = transacaoRepository.
+				findById(id)
+				.orElseThrow(() -> new EntityNotFoundException());
+		
+		return modelMapper.map(transacao, TransacaoDetalhadaDto.class);
+		
+	}
 
 	@Transactional
 	public TransacaoDto atualizar(Long id, TransacaoFormDto transacaoFormDto) {
@@ -77,16 +87,6 @@ public class TransacaoService {
 				.orElseThrow(() -> new EntityNotFoundException());
 		
 		transacaoRepository.delete(transacao);
-	}
-
-	public TransacaoDetalhadaDto detalhar(Long id) {
-		
-		Transacao transacao = transacaoRepository.
-				findById(id)
-				.orElseThrow(() -> new EntityNotFoundException());
-		
-		return modelMapper.map(transacao, TransacaoDetalhadaDto.class);
-		
 	}
 
 }

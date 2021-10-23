@@ -116,6 +116,37 @@ class TransacaoServiceTest {
 	}
 	
 	@Test
+	void transacaoDeveSerDetalhada() {
+		
+		Transacao transacao = criarTransacao();
+		
+		Mockito
+		.when(transacaoRepository.findById(transacao.getId()))
+		.thenReturn(Optional.of(transacao));
+		
+		TransacaoDto transacaoDto = transacaoService.detalhar(transacao.getId());
+		
+		assertEquals(transacao.getTicker(), transacaoDto.getTicker());
+		assertEquals(transacao.getPreco(), transacaoDto.getPreco());
+		assertEquals(transacao.getQuantidade(), transacaoDto.getQuantidade());
+		assertEquals(transacao.getTipo(), transacaoDto.getTipo());
+		
+	}
+	
+	@Test
+	void transacaoNaoDeveSerDetalhadaPoisElaNaoExiste() {
+		
+		Long idTransacao = 1L;
+		
+		Mockito
+		.when(transacaoRepository.findById(idTransacao))
+		.thenThrow(EntityNotFoundException.class);
+		
+		assertThrows(EntityNotFoundException.class, () -> transacaoService.detalhar(idTransacao));
+		
+	}
+	
+	@Test
 	void transacaoDeveSerAtualizada() {
 		
 		TransacaoFormDto transacaoFormDto = criarTransacaoFormDtoParaAtualizacao();
