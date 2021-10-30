@@ -47,7 +47,8 @@ class UsuarioServiceTest {
 	private UsuarioFormDto criarUsuarioFormDto() {
 		UsuarioFormDto usuarioFormDto = new UsuarioFormDto(
 				"Antonio Eloy de Oliveira Araujo", 
-				"antonio.eloy150@email.com.br"
+				"antonio.eloy150@email.com.br",
+				1l
 				);
 		return usuarioFormDto;
 	}
