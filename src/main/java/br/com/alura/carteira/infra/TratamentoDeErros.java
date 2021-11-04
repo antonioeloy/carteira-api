@@ -1,5 +1,6 @@
 package br.com.alura.carteira.infra;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -50,6 +52,12 @@ public class TratamentoDeErros {
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	public ErroRequisicaoInvalidaDto tratarErroRequisicaoInvalida(Exception ex) {
 		return new ErroRequisicaoInvalidaDto(ex.getMessage());
+	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	@ResponseStatus(code = HttpStatus.FORBIDDEN)
+	public String tratarErroAcessoNegado(AccessDeniedException ex) {
+		return ex.getMessage();
 	}
 
 }
