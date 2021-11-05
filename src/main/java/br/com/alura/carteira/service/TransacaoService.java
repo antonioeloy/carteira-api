@@ -27,7 +27,8 @@ public class TransacaoService {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
-	private ModelMapper modelMapper = new ModelMapper();
+	@Autowired
+	private ModelMapper modelMapper;
 
 	public Page<TransacaoDto> listar(Pageable paginacao, Usuario logado) {
 		Page<Transacao> transacoes = transacaoRepository.findAllByUsuario(paginacao, logado);
@@ -45,8 +46,8 @@ public class TransacaoService {
 				this.lancaExcecaoAcessoNegado();
 			}
 			
-			modelMapper.typeMap(TransacaoFormDto.class, Transacao.class).addMappings(mapper -> mapper.skip(Transacao::setId));
 			Transacao transacao = modelMapper.map(transacaoFormDto, Transacao.class);
+			transacao.setId(null);
 			transacao.setUsuario(usuario);
 			
 			transacaoRepository.save(transacao);

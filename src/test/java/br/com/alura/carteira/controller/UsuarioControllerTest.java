@@ -1,22 +1,29 @@
 package br.com.alura.carteira.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
+
+import br.com.alura.carteira.infra.security.TokenService;
+import br.com.alura.carteira.modelo.Perfil;
+import br.com.alura.carteira.modelo.Usuario;
+import br.com.alura.carteira.repository.PerfilRepository;
+import br.com.alura.carteira.repository.UsuarioRepository;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -28,29 +35,28 @@ class UsuarioControllerTest {
 	@Autowired
 	private MockMvc mvc;
 	
-	@Test
-	void deveriaCadastrarUsuarioComDadosCompletos() throws Exception {
-		
-		String json = "{\"nome\": \"Antonio Eloy\", \"login\": \"antonio.eloy@email.com.br\"}";
-		
-		mvc
-		.perform(
-				post("/usuarios")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(json)
-				)
-		.andExpect(
-				status().isCreated()
-				)
-		.andExpect(
-				header().exists("Location")
-				)
-		.andExpect(
-				content().json(json)
-				);
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+	
+	@Autowired
+	private PerfilRepository perfilRepository;
+	
+	@Autowired
+	private TokenService tokenService;
+	
+	private String token;
+	
+	@BeforeEach
+	private void gerarToken() {
+		Usuario logado = new Usuario("Antonio", "antonio", "123456");
+		Perfil admin = perfilRepository.findById(1L).get();
+		logado.adicionarPerfil(admin);
+		usuarioRepository.save(logado);
+		Authentication authentication = new UsernamePasswordAuthenticationToken(logado, logado.getLogin());
+		this.token = tokenService.gerarToken(authentication);
 		
 	}
-
+	
 	@Test
 	void naoDeveriaCadastrarUsuarioComDadosIncompletos() throws Exception {
 		
@@ -61,6 +67,7 @@ class UsuarioControllerTest {
 				post("/usuarios")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json)
+				.header("Authorization", token)
 				)
 		.andExpect(
 				status().isBadRequest()
@@ -69,15 +76,18 @@ class UsuarioControllerTest {
 	}
 	
 	@Test
-	void naoDeveriaCadastrarUsuarioComLoginJaEmUso() throws Exception {
+	void deveriaCadastrarUsuarioComDadosCompletos() throws Exception {
 		
-		String json1 = "{\"nome\": \"Antonio Eloy\", \"login\": \"antonio.eloy@email.com.br\"}";
+		String json = "{\"nome\": \"Antonio Eloy\", \"login\": \"antonio.eloy@email.com.br\", \"perfilId\": 2}";
+		
+		String jsonRetorno = "{\"nome\": \"Antonio Eloy\", \"login\": \"antonio.eloy@email.com.br\"}";
 		
 		mvc
 		.perform(
 				post("/usuarios")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(json1)
+				.content(json)
+				.header("Authorization", token)
 				)
 		.andExpect(
 				status().isCreated()
@@ -86,60 +96,27 @@ class UsuarioControllerTest {
 				header().exists("Location")
 				)
 		.andExpect(
-				content().json(json1)
-				);
-		
-		String json2 = "{\"nome\": \"Antonio Eloy de Oliveira Araujo\", \"login\": \"antonio.eloy@email.com.br\"}";
-		
-		mvc
-		.perform(
-				post("/usuarios")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(json2)
-				)
-		.andExpect(
-				status().isBadRequest()
+				content().json(jsonRetorno)
 				);
 		
 	}
 	
 	@Test
-	void deveriaRetornarUmUsuario() throws Exception {
+	void naoDeveriaCadastrarUsuarioComLoginJaEmUso() throws Exception {
 		
-		String json = "{\"nome\": \"Antonio Eloy\", \"login\": \"antonio.eloy@email.com.br\"}";
-		
-		MvcResult resultadoPostUsuario = mvc
-				.perform(
-						post("/usuarios")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(json)
-						)
-				.andExpect(
-						status().isCreated()
-						)
-				.andExpect(
-						header().exists("Location")
-						)
-				.andExpect(
-						content().json(json)
-						)
-				.andReturn();
-		
-		String location = resultadoPostUsuario.getResponse().getHeader("Location");
-		
-		String idUsuario = location.substring(location.lastIndexOf("/") + 1);
+		String json = "{\"nome\": \"Antonio Eloy\", \"login\": \"antonio\", \"perfilId\": 2}";
 		
 		mvc
 		.perform(
-				get("/usuarios/" + idUsuario)
+				post("/usuarios")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json)
+				.header("Authorization", token)
 				)
 		.andExpect(
-				status().isOk()
-				)
-		.andExpect(
-				content().json(json)
+				status().isBadRequest()
 				);
-				
+		
 	}
 
 }

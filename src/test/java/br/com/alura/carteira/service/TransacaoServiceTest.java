@@ -9,15 +9,19 @@ import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
+import br.com.alura.carteira.dto.TransacaoDetalhadaDto;
 import br.com.alura.carteira.dto.TransacaoDto;
 import br.com.alura.carteira.dto.TransacaoFormDto;
+import br.com.alura.carteira.dto.UsuarioDto;
 import br.com.alura.carteira.modelo.TipoTransacao;
 import br.com.alura.carteira.modelo.Transacao;
 import br.com.alura.carteira.modelo.Usuario;
@@ -33,33 +37,25 @@ class TransacaoServiceTest {
 	@Mock
 	private UsuarioRepository usuarioRepository;
 	
+	@Mock
+	private ModelMapper modelMapper;
+	
 	@InjectMocks
 	private TransacaoService transacaoService;
 	
-	private Transacao criarTransacao() {
-		Transacao transacao = new Transacao(
-				1L,
-				"ITSA4",
-				new BigDecimal("45.20"),
-				150,
-				LocalDate.now(),
-				TipoTransacao.COMPRA,
-				new Usuario(1L, "Antonio", "antonio.eloy@email.com.br", "123456")
-				);
-		return transacao;
+	private Usuario logado;
+	
+	@BeforeEach
+	public void inicializaUsuarioLogado() {
+		this.logado = new Usuario(null, "Antonio", "antonio", "123456");
 	}
 	
-	private Optional<Transacao> criarOptionalTransacao() {
-		Transacao transacao = new Transacao(
-				1L,
-				"ITSA4",
-				new BigDecimal("45.20"),
-				150,
-				LocalDate.now(),
-				TipoTransacao.COMPRA,
-				new Usuario(1L, "Antonio", "antonio.eloy@email.com.br", "123456")
-				);
-		return Optional.of(transacao);
+	private UsuarioDto criarUsuarioDto(Usuario usuario) {
+		UsuarioDto usuarioDto = new UsuarioDto(
+				usuario.getId(), 
+				usuario.getNome(), 
+				usuario.getLogin());
+		return usuarioDto;
 	}
 	
 	private TransacaoFormDto criarTransacaoFormDto() {
@@ -69,9 +65,45 @@ class TransacaoServiceTest {
 				150,
 				LocalDate.now(),
 				TipoTransacao.COMPRA,
-				1L
+				this.logado.getId()
 				);
 		return transacaoFormDto;
+	}
+	
+	private Transacao criarTransacao(TransacaoFormDto transacaoFormDto) {
+		Transacao transacao = new Transacao(
+				transacaoFormDto.getTicker(),
+				transacaoFormDto.getPreco(),
+				transacaoFormDto.getQuantidade(),
+				transacaoFormDto.getData(),
+				transacaoFormDto.getTipo(),
+				this.logado
+				);
+		return transacao;
+	}
+	
+	private TransacaoDto criarTransacaoDto(Transacao transacao) {
+		TransacaoDto transacaoDto = new TransacaoDto(
+				null,
+				transacao.getTicker(),
+				transacao.getPreco(),
+				transacao.getQuantidade(),
+				transacao.getTipo()
+				);
+		return transacaoDto;
+	}
+	
+	private TransacaoDetalhadaDto criarTransacaoDetalhadaDto(Transacao transacao) {
+		TransacaoDetalhadaDto transacaoDetalhadaDto = new TransacaoDetalhadaDto(
+				null,
+				transacao.getTicker(),
+				transacao.getPreco(),
+				transacao.getQuantidade(),
+				transacao.getTipo(),
+				transacao.getData(),
+				criarUsuarioDto(this.logado)
+				);
+		return transacaoDetalhadaDto;
 	}
 	
 	private TransacaoFormDto criarTransacaoFormDtoParaAtualizacao() {
@@ -81,134 +113,129 @@ class TransacaoServiceTest {
 				300,
 				LocalDate.now(),
 				TipoTransacao.VENDA,
-				1L
+				this.logado.getId()
 				);
 		return transacaoFormDto;
 	}
 
-//	@Test
-//	void transacaoDeveSerCadastrada() {
-//		
-//		TransacaoFormDto transacaoFormDto = criarTransacaoFormDto();
-//		
-//		TransacaoDto transacaoDto = transacaoService.cadastrar(transacaoFormDto);
-//		
-//		Mockito.verify(transacaoRepository).save(Mockito.any());
-//		
-//		assertEquals(transacaoFormDto.getTicker(), transacaoDto.getTicker());
-//		assertEquals(transacaoFormDto.getPreco(), transacaoDto.getPreco());
-//		assertEquals(transacaoFormDto.getQuantidade(), transacaoDto.getQuantidade());
-//		assertEquals(transacaoFormDto.getTipo(), transacaoDto.getTipo());
-//		
-//	}
-//	
-//	@Test
-//	void transacaoNaoDeveSerCadastradaPoisUsuarioNaoExiste() {
-//		
-//		TransacaoFormDto transacaoFormDto = criarTransacaoFormDto();
-//		
-//		Mockito
-//		.when(usuarioRepository.getById(transacaoFormDto.getUsuarioId()))
-//		.thenThrow(EntityNotFoundException.class);
-//		
-//		assertThrows(IllegalArgumentException.class, () -> transacaoService.cadastrar(transacaoFormDto));
-//		
-//	}
-//	
-//	@Test
-//	void transacaoDeveSerDetalhada() {
-//		
-//		Transacao transacao = criarTransacao();
-//		
-//		Mockito
-//		.when(transacaoRepository.findById(transacao.getId()))
-//		.thenReturn(Optional.of(transacao));
-//		
-//		TransacaoDto transacaoDto = transacaoService.detalhar(transacao.getId());
-//		
-//		assertEquals(transacao.getTicker(), transacaoDto.getTicker());
-//		assertEquals(transacao.getPreco(), transacaoDto.getPreco());
-//		assertEquals(transacao.getQuantidade(), transacaoDto.getQuantidade());
-//		assertEquals(transacao.getTipo(), transacaoDto.getTipo());
-//		
-//	}
-//	
-//	@Test
-//	void transacaoNaoDeveSerDetalhadaPoisElaNaoExiste() {
-//		
-//		Long idTransacao = 1L;
-//		
-//		Mockito
-//		.when(transacaoRepository.findById(idTransacao))
-//		.thenThrow(EntityNotFoundException.class);
-//		
-//		assertThrows(EntityNotFoundException.class, () -> transacaoService.detalhar(idTransacao));
-//		
-//	}
-//	
-//	@Test
-//	void transacaoDeveSerAtualizada() {
-//		
-//		TransacaoFormDto transacaoFormDto = criarTransacaoFormDtoParaAtualizacao();
-//		
-//		Long idTransacao = 1L;
-//		
-//		Mockito
-//		.when(transacaoRepository.getById(idTransacao))
-//		.thenReturn(criarTransacao());
-//		
-//		TransacaoDto transacaoDto = transacaoService.atualizar(idTransacao, transacaoFormDto);
-//		
-//		Mockito.verify(transacaoRepository).save(Mockito.any());
-//		
-//		assertEquals(transacaoFormDto.getTicker(), transacaoDto.getTicker());
-//		assertEquals(transacaoFormDto.getPreco(), transacaoDto.getPreco());
-//		assertEquals(transacaoFormDto.getQuantidade(), transacaoDto.getQuantidade());
-//		assertEquals(transacaoFormDto.getTipo(), transacaoDto.getTipo());
-//		
-//	}
-//	
-//	@Test
-//	void transacaoNaoDeveSerAtualizadaPoisElaNaoExiste() {
-//		
-//		TransacaoFormDto transacaoFormDto = criarTransacaoFormDtoParaAtualizacao();
-//		
-//		Long idTransacao = 1L;
-//		
-//		Mockito
-//		.when(transacaoRepository.getById(idTransacao))
-//		.thenThrow(EntityNotFoundException.class);
-//		
-//		assertThrows(EntityNotFoundException.class, () -> transacaoService.atualizar(idTransacao, transacaoFormDto));
-//		
-//	}
-//	
-//	@Test
-//	void transacaoDeveSerRemovida() {
-//		
-//		Long idTransacao = 1L;
-//		
-//		Mockito
-//		.when(transacaoRepository.findById(idTransacao))
-//		.thenReturn(criarOptionalTransacao());
-//		
-//		transacaoService.remover(idTransacao);
-//		
-//		Mockito.verify(transacaoRepository).delete(Mockito.any());
-//		
-//	}
-//	
-//	@Test
-//	void transacaoNaoDeveSerRemovidaPoisElaNaoExiste() {
-//		
-//		Long idTransacao = 1L;
-//		
-//		Mockito
-//		.when(transacaoRepository.findById(idTransacao))
-//		.thenThrow(EntityNotFoundException.class);
-//		
-//		assertThrows(EntityNotFoundException.class, () -> transacaoService.remover(idTransacao));
-//		
-//	}
+	@Test
+	void transacaoDeveSerCadastrada() {
+		
+		TransacaoFormDto transacaoFormDto = criarTransacaoFormDto();
+		
+		Transacao transacao = criarTransacao(transacaoFormDto);
+		
+		TransacaoDetalhadaDto transacaoDetalhadaDto = criarTransacaoDetalhadaDto(transacao);
+		
+		Mockito
+		.when(usuarioRepository.getById(transacaoFormDto.getUsuarioId()))
+		.thenReturn(logado);
+		
+		Mockito
+		.when(modelMapper.map(transacaoFormDto, Transacao.class))
+		.thenReturn(transacao);
+		
+		Mockito
+		.when(modelMapper.map(transacao, TransacaoDetalhadaDto.class))
+		.thenReturn(transacaoDetalhadaDto);
+		
+		transacaoDetalhadaDto = transacaoService.cadastrar(transacaoFormDto, logado);
+		
+		Mockito.verify(transacaoRepository).save(Mockito.any());
+		
+		assertEquals(transacaoFormDto.getTicker(), transacaoDetalhadaDto.getTicker());
+		assertEquals(transacaoFormDto.getPreco(), transacaoDetalhadaDto.getPreco());
+		assertEquals(transacaoFormDto.getQuantidade(), transacaoDetalhadaDto.getQuantidade());
+		assertEquals(transacaoFormDto.getData(), transacaoDetalhadaDto.getData());
+		assertEquals(transacaoFormDto.getTipo(), transacaoDetalhadaDto.getTipo());
+		assertEquals(transacaoFormDto.getUsuarioId(), transacaoDetalhadaDto.getUsuario().getId());
+		
+	}
+	
+	@Test
+	void transacaoNaoDeveSerCadastradaPoisUsuarioNaoExiste() {
+		
+		TransacaoFormDto transacaoFormDto = criarTransacaoFormDto();
+		
+		Mockito
+		.when(usuarioRepository.getById(transacaoFormDto.getUsuarioId()))
+		.thenThrow(EntityNotFoundException.class);
+		
+		assertThrows(IllegalArgumentException.class, () -> transacaoService.cadastrar(transacaoFormDto, logado));
+		
+	}
+	
+	@Test
+	void transacaoDeveSerAtualizada() {
+		
+		TransacaoFormDto transacaoFormDto = criarTransacaoFormDtoParaAtualizacao();
+		
+		Transacao transacao = criarTransacao(criarTransacaoFormDto());
+		
+		TransacaoDto transacaoDto = criarTransacaoDto(criarTransacao(transacaoFormDto));
+		
+		Long idTransacao = 1L;
+		
+		Mockito
+		.when(transacaoRepository.getById(idTransacao))
+		.thenReturn(transacao);
+		
+		Mockito
+		.when(modelMapper.map(transacao, TransacaoDto.class))
+		.thenReturn(transacaoDto);
+		
+		transacaoDto = transacaoService.atualizar(idTransacao, transacaoFormDto, logado);
+		
+		Mockito.verify(transacaoRepository).save(Mockito.any());
+		
+		assertEquals(transacaoFormDto.getTicker(), transacaoDto.getTicker());
+		assertEquals(transacaoFormDto.getPreco(), transacaoDto.getPreco());
+		assertEquals(transacaoFormDto.getQuantidade(), transacaoDto.getQuantidade());
+		assertEquals(transacaoFormDto.getTipo(), transacaoDto.getTipo());
+		
+	}
+	
+	@Test
+	void transacaoNaoDeveSerAtualizadaPoisElaNaoExiste() {
+		
+		TransacaoFormDto transacaoFormDto = criarTransacaoFormDtoParaAtualizacao();
+		
+		Long idTransacao = 1L;
+		
+		Mockito
+		.when(transacaoRepository.getById(idTransacao))
+		.thenThrow(EntityNotFoundException.class);
+		
+		assertThrows(EntityNotFoundException.class, () -> transacaoService.atualizar(idTransacao, transacaoFormDto, logado));
+		
+	}
+	
+	@Test
+	void transacaoDeveSerRemovida() {
+		
+		Long idTransacao = 1L;
+		
+		Mockito
+		.when(transacaoRepository.findById(idTransacao))
+		.thenReturn(Optional.of(criarTransacao(criarTransacaoFormDto())));
+		
+		transacaoService.remover(idTransacao, logado);
+		
+		Mockito.verify(transacaoRepository).delete(Mockito.any());
+		
+	}
+	
+	@Test
+	void transacaoNaoDeveSerRemovidaPoisElaNaoExiste() {
+		
+		Long idTransacao = 1L;
+		
+		Mockito
+		.when(transacaoRepository.findById(idTransacao))
+		.thenThrow(EntityNotFoundException.class);
+		
+		assertThrows(EntityNotFoundException.class, () -> transacaoService.remover(idTransacao, logado));
+		
+	}
 
 }

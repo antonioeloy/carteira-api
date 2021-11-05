@@ -14,4 +14,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 	@Query("select u from Usuario u join fetch u.perfis where u.id = :id")
 	public Optional<Usuario> carregarPorIdComPerfis(Long id);
 
+	public Boolean existsByLogin(String login);
+
 }

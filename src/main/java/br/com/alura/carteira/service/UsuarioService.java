@@ -41,20 +41,26 @@ public class UsuarioService {
 
 	@Transactional
 	public UsuarioDto cadastrar(UsuarioFormDto usuarioFormDto) {
-		Boolean loginEmUso = usuarioRepository.findByLogin(usuarioFormDto.getLogin())
-				.stream()
-				.anyMatch(usuario -> usuario.getLogin().equals(usuarioFormDto.getLogin()));
+		
+		Boolean loginEmUso = usuarioRepository.existsByLogin(usuarioFormDto.getLogin());
+				
 		if (loginEmUso) {
 			throw new IllegalArgumentException("O login informado já está em uso");
 		}
-		modelMapper.typeMap(UsuarioFormDto.class, Usuario.class).addMappings(mapper -> mapper.skip(Usuario::setId));
+		
 		Usuario usuario = modelMapper.map(usuarioFormDto, Usuario.class);
+		usuario.setId(null);
+		
 		Perfil perfil = perfilRepository.getById(usuarioFormDto.getPerfilId());
 		usuario.adicionarPerfil(perfil);
+		
 		String senha = new Random().nextInt(100000) + "";
 		usuario.setSenha(bCryptPasswordEncoder.encode(senha));
+		
 		usuarioRepository.save(usuario);
+		
 		return modelMapper.map(usuario, UsuarioDto.class);
+		
 	}
 	
 	public UsuarioDto retornar(Long id) {
