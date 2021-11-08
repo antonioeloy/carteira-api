@@ -23,8 +23,8 @@ public class TransacaoDetalhadaDto extends TransacaoDto {
 	private UsuarioDto usuario;
 	
 	public TransacaoDetalhadaDto(Long id, String ticker, BigDecimal preco, Integer quantidade, TipoTransacao tipo,
-			LocalDate data, UsuarioDto usuario) {
-		super(id, ticker, preco, quantidade, tipo);
+			BigDecimal imposto, LocalDate data, UsuarioDto usuario) {
+		super(id, ticker, preco, quantidade, tipo, imposto);
 		this.data = data;
 		this.usuario = usuario;
 	}

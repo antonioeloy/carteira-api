@@ -40,6 +40,9 @@ class TransacaoServiceTest {
 	@Mock
 	private ModelMapper modelMapper;
 	
+	@Mock
+	private CalculadoraDeImpostosService calculadoraDeImpostosService;
+	
 	@InjectMocks
 	private TransacaoService transacaoService;
 	
@@ -88,7 +91,8 @@ class TransacaoServiceTest {
 				transacao.getTicker(),
 				transacao.getPreco(),
 				transacao.getQuantidade(),
-				transacao.getTipo()
+				transacao.getTipo(),
+				new BigDecimal("0")
 				);
 		return transacaoDto;
 	}
@@ -100,6 +104,7 @@ class TransacaoServiceTest {
 				transacao.getPreco(),
 				transacao.getQuantidade(),
 				transacao.getTipo(),
+				new BigDecimal("0"),
 				transacao.getData(),
 				criarUsuarioDto(this.logado)
 				);

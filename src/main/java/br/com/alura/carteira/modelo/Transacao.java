@@ -42,6 +42,8 @@ public class Transacao {
 	@Enumerated(EnumType.STRING)
 	private TipoTransacao tipo;
 	
+	private BigDecimal imposto;
+	
 	@ManyToOne
 	private Usuario usuario;
 
