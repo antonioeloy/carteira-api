@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.alura.carteira.dto.UsuarioDetalhadoDto;
 import br.com.alura.carteira.dto.UsuarioDto;
 import br.com.alura.carteira.dto.UsuarioFormDto;
 import br.com.alura.carteira.modelo.Perfil;
@@ -40,7 +41,7 @@ public class UsuarioService {
 	}
 
 	@Transactional
-	public UsuarioDto cadastrar(UsuarioFormDto usuarioFormDto) {
+	public UsuarioDetalhadoDto cadastrar(UsuarioFormDto usuarioFormDto) {
 		
 		Boolean loginEmUso = usuarioRepository.existsByLogin(usuarioFormDto.getLogin());
 				
@@ -59,15 +60,15 @@ public class UsuarioService {
 		
 		usuarioRepository.save(usuario);
 		
-		return modelMapper.map(usuario, UsuarioDto.class);
+		return modelMapper.map(usuario, UsuarioDetalhadoDto.class);
 		
 	}
 	
-	public UsuarioDto retornar(Long id) {
+	public UsuarioDetalhadoDto retornar(Long id) {
 		Usuario usuario = usuarioRepository
 				.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException());
-		return modelMapper.map(usuario, UsuarioDto.class);
+		return modelMapper.map(usuario, UsuarioDetalhadoDto.class);
 	}
 
 	@Transactional

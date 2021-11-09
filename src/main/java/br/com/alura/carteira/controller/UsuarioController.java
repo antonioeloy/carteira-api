@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.alura.carteira.dto.UsuarioDetalhadoDto;
 import br.com.alura.carteira.dto.UsuarioDto;
 import br.com.alura.carteira.dto.UsuarioFormDto;
 import br.com.alura.carteira.service.UsuarioService;
@@ -43,14 +44,14 @@ public class UsuarioController {
 	
 	@PostMapping
 	@ApiOperation("Cadastrar um usuário")
-	public ResponseEntity<UsuarioDto> cadastrar(@RequestBody @Valid UsuarioFormDto usuarioFormDto,
+	public ResponseEntity<UsuarioDetalhadoDto> cadastrar(@RequestBody @Valid UsuarioFormDto usuarioFormDto,
 			UriComponentsBuilder uriBuilder) {
-		UsuarioDto usuarioDto = usuarioService.cadastrar(usuarioFormDto);
+		UsuarioDetalhadoDto usuarioDetalhadoDto = usuarioService.cadastrar(usuarioFormDto);
 		URI uri = uriBuilder
 				.path("/usuarios/{id}")
-				.buildAndExpand(usuarioDto.getId())
+				.buildAndExpand(usuarioDetalhadoDto.getId())
 				.toUri();
-		return ResponseEntity.created(uri).body(usuarioDto);
+		return ResponseEntity.created(uri).body(usuarioDetalhadoDto);
 	}
 	
 	@PutMapping("/{id}")
@@ -62,9 +63,9 @@ public class UsuarioController {
 	
 	@GetMapping("/{id}")
 	@ApiOperation("Retornar um usuário")
-	public ResponseEntity<UsuarioDto> retornar(@PathVariable @NotNull Long id) {
-		UsuarioDto usuarioDto = usuarioService.retornar(id);
-		return ResponseEntity.ok(usuarioDto);
+	public ResponseEntity<UsuarioDetalhadoDto> retornar(@PathVariable @NotNull Long id) {
+		UsuarioDetalhadoDto usuarioDetalhadoDto = usuarioService.retornar(id);
+		return ResponseEntity.ok(usuarioDetalhadoDto);
 	}
 	
 	@DeleteMapping("/{id}")
@@ -73,6 +74,5 @@ public class UsuarioController {
 		usuarioService.remover(id);
 		return ResponseEntity.noContent().build();
 	}
-	
 
 }
