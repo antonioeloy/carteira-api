@@ -82,7 +82,7 @@ public class TransacaoService {
 	}
 
 	@Transactional
-	public TransacaoDto atualizar(Long id, TransacaoFormDto transacaoFormDto, Usuario logado) {
+	public TransacaoDetalhadaDto atualizar(Long id, TransacaoFormDto transacaoFormDto, Usuario logado) {
 		
 		Transacao transacao = transacaoRepository.getById(id);
 		
@@ -99,7 +99,7 @@ public class TransacaoService {
 				);
 		transacaoRepository.save(transacao);
 		
-		return modelMapper.map(transacao, TransacaoDto.class);
+		return modelMapper.map(transacao, TransacaoDetalhadaDto.class);
 		
 	}
 

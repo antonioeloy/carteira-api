@@ -61,11 +61,11 @@ public class TransacaoController {
 	
 	@PutMapping("/{id}")
 	@ApiOperation("Atualizar uma transação")
-	public ResponseEntity<TransacaoDto> atualizar(@PathVariable @NotNull Long id, 
+	public ResponseEntity<TransacaoDetalhadaDto> atualizar(@PathVariable @NotNull Long id, 
 			@RequestBody @Valid TransacaoFormDto transacaoFormDto,
 			@ApiIgnore @AuthenticationPrincipal Usuario logado) {
-		TransacaoDto transacaoDto = transacaoService.atualizar(id, transacaoFormDto, logado);
-		return ResponseEntity.ok(transacaoDto);
+		TransacaoDetalhadaDto transacaoDetalhadaDto = transacaoService.atualizar(id, transacaoFormDto, logado);
+		return ResponseEntity.ok(transacaoDetalhadaDto);
 	}
 	
 	@DeleteMapping("/{id}")

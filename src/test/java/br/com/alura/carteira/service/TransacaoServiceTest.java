@@ -20,7 +20,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
 
 import br.com.alura.carteira.dto.TransacaoDetalhadaDto;
-import br.com.alura.carteira.dto.TransacaoDto;
 import br.com.alura.carteira.dto.TransacaoFormDto;
 import br.com.alura.carteira.dto.UsuarioDto;
 import br.com.alura.carteira.modelo.TipoTransacao;
@@ -127,18 +126,6 @@ class TransacaoServiceTest {
 		return transacao;
 	}
 	
-	private TransacaoDto criarTransacaoDto(Transacao transacao) {
-		TransacaoDto transacaoDto = new TransacaoDto(
-				null,
-				transacao.getTicker(),
-				transacao.getPreco(),
-				transacao.getQuantidade(),
-				transacao.getTipo(),
-				new BigDecimal("0")
-				);
-		return transacaoDto;
-	}
-	
 	private TransacaoDetalhadaDto criarTransacaoDetalhadaDto(Transacao transacao) {
 		TransacaoDetalhadaDto transacaoDetalhadaDto = new TransacaoDetalhadaDto(
 				null,
@@ -229,7 +216,7 @@ class TransacaoServiceTest {
 		
 		TransacaoFormDto transacaoFormDto = criarTransacaoFormDtoParaAtualizacao();
 		Transacao transacao = criarTransacao(transacaoFormDto);
-		TransacaoDto transacaoDto = criarTransacaoDto(transacao);	
+		TransacaoDetalhadaDto transacaoDetalhadaDto = criarTransacaoDetalhadaDto(transacao);	
 		Long idTransacao = 1L;
 		
 		Mockito
@@ -237,17 +224,19 @@ class TransacaoServiceTest {
 		.thenReturn(transacao);
 		
 		Mockito
-		.when(modelMapper.map(transacao, TransacaoDto.class))
-		.thenReturn(transacaoDto);
+		.when(modelMapper.map(transacao, TransacaoDetalhadaDto.class))
+		.thenReturn(transacaoDetalhadaDto);
 		
-		transacaoDto = transacaoService.atualizar(idTransacao, transacaoFormDto, logado);
+		transacaoDetalhadaDto = transacaoService.atualizar(idTransacao, transacaoFormDto, logado);
 		
 		Mockito.verify(transacaoRepository).save(Mockito.any());
 		
-		assertEquals(transacaoFormDto.getTicker(), transacaoDto.getTicker());
-		assertEquals(transacaoFormDto.getPreco(), transacaoDto.getPreco());
-		assertEquals(transacaoFormDto.getQuantidade(), transacaoDto.getQuantidade());
-		assertEquals(transacaoFormDto.getTipo(), transacaoDto.getTipo());
+		assertEquals(transacaoFormDto.getTicker(), transacaoDetalhadaDto.getTicker());
+		assertEquals(transacaoFormDto.getPreco(), transacaoDetalhadaDto.getPreco());
+		assertEquals(transacaoFormDto.getQuantidade(), transacaoDetalhadaDto.getQuantidade());
+		assertEquals(transacaoFormDto.getData(), transacaoDetalhadaDto.getData());
+		assertEquals(transacaoFormDto.getTipo(), transacaoDetalhadaDto.getTipo());
+		assertEquals(transacaoFormDto.getUsuarioId(), transacaoDetalhadaDto.getUsuario().getId());
 		
 	}
 	
