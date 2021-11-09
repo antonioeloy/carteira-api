@@ -3,6 +3,7 @@ package br.com.alura.carteira.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -16,7 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import br.com.alura.carteira.dto.UsuarioDto;
+import br.com.alura.carteira.dto.PerfilDto;
+import br.com.alura.carteira.dto.UsuarioDetalhadoDto;
 import br.com.alura.carteira.dto.UsuarioFormDto;
 import br.com.alura.carteira.modelo.Perfil;
 import br.com.alura.carteira.modelo.Transacao;
@@ -69,18 +71,20 @@ class UsuarioServiceTest {
 		return usuario;
 	}
 	
-	private UsuarioDto criarUsuarioDto() {
-		UsuarioDto usuarioDto = new UsuarioDto(null, 
+	private UsuarioDetalhadoDto criarUsuarioDetalhadoDto() {
+		UsuarioDetalhadoDto usuarioDetalhadoDto = new UsuarioDetalhadoDto(
 				"Antonio Eloy de Oliveira Araujo", 
-				"antonio.eloy150@email.com.br");
-		return usuarioDto;
+				"antonio.eloy150@email.com.br",
+				List.of(new PerfilDto(1L, "ROLE_ADMIN")));
+		return usuarioDetalhadoDto;
 	}
 	
-	private UsuarioDto criarUsuarioDtoAtualizado() {
-		UsuarioDto usuarioDto = new UsuarioDto(null, 
+	private UsuarioDetalhadoDto criarUsuarioDetalhadoDtoAtualizado() {
+		UsuarioDetalhadoDto usuarioDetalhadoDto = new UsuarioDetalhadoDto( 
 				"Antonio Eloy de Oliveira Araujo", 
-				"antonio.eloy300@email.com.br");
-		return usuarioDto;
+				"antonio.eloy300@email.com.br",
+				List.of(new PerfilDto(1L, "ROLE_ADMIN")));
+		return usuarioDetalhadoDto;
 	}
 	
 	private Perfil criarPerfil() {
@@ -88,26 +92,14 @@ class UsuarioServiceTest {
 		return perfil;
 	}
 	
-	private Optional<Usuario> criarOptionalUsuario() {
-		Usuario usuario =  criarUsuario();
-		return Optional.of(usuario);
-	}
-	
-	
 	@Test
 	void usuarioDeveSerCadastrado() {
 		
-		UsuarioFormDto usuarioFormDto = criarUsuarioFormDto();
-		
-		Boolean usuarioExistente = false;
-		
+		UsuarioFormDto usuarioFormDto = criarUsuarioFormDto();		
+		Boolean usuarioExistente = false;	
 		Usuario usuario = criarUsuario();
-		
 		Perfil perfil = criarPerfil();
-		
-		String senhaCriptografada = "$2a$10$Mbg2.cJMsmWXR5R.1D2u5uGGH8/UIejEdsxeeb.bXxXN3wkyC0adC";
-		
-		UsuarioDto usuarioDto = criarUsuarioDto();
+		UsuarioDetalhadoDto usuarioDetalhadoDto = criarUsuarioDetalhadoDto();
 		
 		Mockito
 		.when(usuarioRepository.existsByLogin(usuarioFormDto.getLogin()))
@@ -122,27 +114,22 @@ class UsuarioServiceTest {
 		.thenReturn(perfil);
 		
 		Mockito
-		.when(bCryptPasswordEncoder.encode(Mockito.anyString()))
-		.thenReturn(senhaCriptografada);
+		.when(modelMapper.map(usuario, UsuarioDetalhadoDto.class))
+		.thenReturn(usuarioDetalhadoDto);
 		
-		Mockito
-		.when(modelMapper.map(usuario, UsuarioDto.class))
-		.thenReturn(usuarioDto);
-		
-		usuarioDto = usuarioService.cadastrar(usuarioFormDto);
+		usuarioDetalhadoDto = usuarioService.cadastrar(usuarioFormDto);
 		
 		Mockito.verify(usuarioRepository).save(Mockito.any());
 		
-		assertEquals(usuarioFormDto.getNome(), usuarioDto.getNome());
-		assertEquals(usuarioFormDto.getLogin(), usuarioDto.getLogin());
+		assertEquals(usuarioFormDto.getNome(), usuarioDetalhadoDto.getNome());
+		assertEquals(usuarioFormDto.getLogin(), usuarioDetalhadoDto.getLogin());
 		
 	}
 	
 	@Test
 	void usuarioNaoDeveSerCadastradoPoisLoginJaEstaEmUso() {
 		
-		UsuarioFormDto usuarioFormDto = criarUsuarioFormDto();
-		
+		UsuarioFormDto usuarioFormDto = criarUsuarioFormDto();		
 		Boolean usuarioExistente = true;
 		
 		Mockito
@@ -156,12 +143,9 @@ class UsuarioServiceTest {
 	@Test
 	void usuarioDeveSerAtualizado() {
 		
-		UsuarioFormDto usuarioFormDto = criarUsuarioFormDtoAtualizado();
-		
+		UsuarioFormDto usuarioFormDto = criarUsuarioFormDtoAtualizado();	
 		Usuario usuario = criarUsuario();
-		
-		UsuarioDto usuarioDto = criarUsuarioDtoAtualizado();
-		
+		UsuarioDetalhadoDto usuarioDetalhadoDto = criarUsuarioDetalhadoDtoAtualizado();
 		Long idUsuario = 1L;
 		
 		Mockito
@@ -169,23 +153,22 @@ class UsuarioServiceTest {
 		.thenReturn(usuario);
 		
 		Mockito
-		.when(modelMapper.map(usuario, UsuarioDto.class))
-		.thenReturn(usuarioDto);
+		.when(modelMapper.map(usuario, UsuarioDetalhadoDto.class))
+		.thenReturn(usuarioDetalhadoDto);
 		
-		usuarioDto = usuarioService.atualizar(idUsuario,usuarioFormDto);
+		usuarioDetalhadoDto = usuarioService.atualizar(idUsuario,usuarioFormDto);
 		
 		Mockito.verify(usuarioRepository).save(Mockito.any());
 		
-		assertEquals(usuarioFormDto.getNome(), usuarioDto.getNome());
-		assertEquals(usuarioFormDto.getLogin(), usuarioDto.getLogin());
+		assertEquals(usuarioFormDto.getNome(), usuarioDetalhadoDto.getNome());
+		assertEquals(usuarioFormDto.getLogin(), usuarioDetalhadoDto.getLogin());
 		
 	}
 	
 	@Test
 	void usuarioNaoDeveSerAtualizadoPoisEleNaoExiste() {
 		
-		UsuarioFormDto usuarioFormDto = criarUsuarioFormDtoAtualizado();
-		
+		UsuarioFormDto usuarioFormDto = criarUsuarioFormDtoAtualizado();	
 		Long idUsuario = 1L;
 		
 		Mockito
@@ -199,11 +182,12 @@ class UsuarioServiceTest {
 	@Test
 	void usuarioDeveSerRemovido() {
 		
+		Usuario usuario = criarUsuario();
 		Long idUsuario = 1L;
 		
 		Mockito
 		.when(usuarioRepository.findById(idUsuario))
-		.thenReturn(criarOptionalUsuario());
+		.thenReturn(Optional.of(usuario));
 		
 		usuarioService.remover(idUsuario);
 		
@@ -227,15 +211,13 @@ class UsuarioServiceTest {
 	@Test
 	void usuarioNaoDeveSerRemovidoPoisElePossuiTransacoesCadastradas() {
 		
-		Long idUsuario = 1L;
-		
 		Usuario usuario = criarUsuario();
 		usuario.getTransacoes().add(new Transacao());
-		Optional<Usuario> usuarioOptional = Optional.of(usuario);
+		Long idUsuario = 1L;	
 		
 		Mockito
 		.when(usuarioRepository.findById(idUsuario))
-		.thenReturn(usuarioOptional);
+		.thenReturn(Optional.of(usuario));
 		
 		assertThrows(IllegalArgumentException.class, () -> usuarioService.remover(idUsuario));
 		

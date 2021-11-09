@@ -13,6 +13,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UsuarioDetalhadoDto extends UsuarioDto {
 	
+	public UsuarioDetalhadoDto(String nome, String login, List<PerfilDto> perfis) {
+		super(nome, login);
+		this.perfis = perfis;
+	}
+
 	private List<PerfilDto> perfis;
 
 }

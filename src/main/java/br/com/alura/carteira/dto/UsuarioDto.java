@@ -14,5 +14,10 @@ public class UsuarioDto {
 	private Long id;
 	private String nome;
 	private String login;
+	
+	public UsuarioDto(String nome, String login) {
+		this.nome = nome;
+		this.login = login;
+	}
 
 }

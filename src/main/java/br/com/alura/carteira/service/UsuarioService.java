@@ -72,14 +72,14 @@ public class UsuarioService {
 	}
 
 	@Transactional
-	public UsuarioDto atualizar(Long id, UsuarioFormDto usuarioFormDto) {
+	public UsuarioDetalhadoDto atualizar(Long id, UsuarioFormDto usuarioFormDto) {
 		Usuario usuario = usuarioRepository.getById(id);
 		usuario.atualizar(
 				usuarioFormDto.getNome(), 
 				usuarioFormDto.getLogin()
 				);
 		usuarioRepository.save(usuario);
-		return modelMapper.map(usuario, UsuarioDto.class);
+		return modelMapper.map(usuario, UsuarioDetalhadoDto.class);
 	}
 
 	@Transactional

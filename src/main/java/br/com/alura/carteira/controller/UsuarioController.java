@@ -56,9 +56,9 @@ public class UsuarioController {
 	
 	@PutMapping("/{id}")
 	@ApiOperation("Atualizar um usuário")
-	public ResponseEntity<UsuarioDto> atualizar(@PathVariable @NotNull Long id, @RequestBody @Valid UsuarioFormDto usuarioFormDto) {
-		UsuarioDto usuarioDto = usuarioService.atualizar(id, usuarioFormDto);
-		return ResponseEntity.ok(usuarioDto);
+	public ResponseEntity<UsuarioDetalhadoDto> atualizar(@PathVariable @NotNull Long id, @RequestBody @Valid UsuarioFormDto usuarioFormDto) {
+		UsuarioDetalhadoDto usuarioDetalhadoDto = usuarioService.atualizar(id, usuarioFormDto);
+		return ResponseEntity.ok(usuarioDetalhadoDto);
 	}
 	
 	@GetMapping("/{id}")
