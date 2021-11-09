@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.AccessDeniedException;
 
 import br.com.alura.carteira.dto.TransacaoDetalhadaDto;
 import br.com.alura.carteira.dto.TransacaoDto;
@@ -50,7 +51,12 @@ class TransacaoServiceTest {
 	
 	@BeforeEach
 	public void inicializaUsuarioLogado() {
-		this.logado = new Usuario(null, "Antonio", "antonio", "123456");
+		this.logado = new Usuario(1L, "Antonio", "antonio", "123456");
+	}
+	
+	private Usuario criarUsuario() {
+		Usuario usuario = new Usuario(2L, "antonio eloy", "antonio.eloy", "33679");
+		return usuario;
 	}
 	
 	private UsuarioDto criarUsuarioDto(Usuario usuario) {
@@ -73,6 +79,30 @@ class TransacaoServiceTest {
 		return transacaoFormDto;
 	}
 	
+	private Transacao criarTransacao() {
+		Transacao transacao = new Transacao(
+				"ITSA4",
+				new BigDecimal("45.20"),
+				150,
+				LocalDate.now(),
+				TipoTransacao.COMPRA,
+				this.logado
+				);
+		return transacao;
+	}
+	
+	private Transacao criarTransacao(Usuario usuario) {
+		Transacao transacao = new Transacao(
+				"ITSA4",
+				new BigDecimal("45.20"),
+				150,
+				LocalDate.now(),
+				TipoTransacao.COMPRA,
+				usuario
+				);
+		return transacao;
+	}
+	
 	private Transacao criarTransacao(TransacaoFormDto transacaoFormDto) {
 		Transacao transacao = new Transacao(
 				transacaoFormDto.getTicker(),
@@ -81,6 +111,18 @@ class TransacaoServiceTest {
 				transacaoFormDto.getData(),
 				transacaoFormDto.getTipo(),
 				this.logado
+				);
+		return transacao;
+	}
+	
+	private Transacao criarTransacao(TransacaoFormDto transacaoFormDto, Usuario usuario) {
+		Transacao transacao = new Transacao(
+				transacaoFormDto.getTicker(),
+				transacaoFormDto.getPreco(),
+				transacaoFormDto.getQuantidade(),
+				transacaoFormDto.getData(),
+				transacaoFormDto.getTipo(),
+				usuario
 				);
 		return transacao;
 	}
@@ -126,10 +168,8 @@ class TransacaoServiceTest {
 	@Test
 	void transacaoDeveSerCadastrada() {
 		
-		TransacaoFormDto transacaoFormDto = criarTransacaoFormDto();
-		
+		TransacaoFormDto transacaoFormDto = criarTransacaoFormDto();	
 		Transacao transacao = criarTransacao(transacaoFormDto);
-		
 		TransacaoDetalhadaDto transacaoDetalhadaDto = criarTransacaoDetalhadaDto(transacao);
 		
 		Mockito
@@ -171,14 +211,25 @@ class TransacaoServiceTest {
 	}
 	
 	@Test
+	void transacaoNaoDeveSerCadastradaPoisUsuarioLogadoDiferenteUsuarioTransacao() {
+		
+		TransacaoFormDto transacaoFormDto = criarTransacaoFormDto();
+		Usuario usuario = criarUsuario();
+		
+		Mockito
+		.when(usuarioRepository.getById(transacaoFormDto.getUsuarioId()))
+		.thenReturn(usuario);
+		
+		assertThrows(AccessDeniedException.class, () -> transacaoService.cadastrar(transacaoFormDto, logado));
+				
+	}
+	
+	@Test
 	void transacaoDeveSerAtualizada() {
 		
 		TransacaoFormDto transacaoFormDto = criarTransacaoFormDtoParaAtualizacao();
-		
-		Transacao transacao = criarTransacao(criarTransacaoFormDto());
-		
-		TransacaoDto transacaoDto = criarTransacaoDto(criarTransacao(transacaoFormDto));
-		
+		Transacao transacao = criarTransacao(transacaoFormDto);
+		TransacaoDto transacaoDto = criarTransacaoDto(transacao);	
 		Long idTransacao = 1L;
 		
 		Mockito
@@ -203,8 +254,7 @@ class TransacaoServiceTest {
 	@Test
 	void transacaoNaoDeveSerAtualizadaPoisElaNaoExiste() {
 		
-		TransacaoFormDto transacaoFormDto = criarTransacaoFormDtoParaAtualizacao();
-		
+		TransacaoFormDto transacaoFormDto = criarTransacaoFormDtoParaAtualizacao();	
 		Long idTransacao = 1L;
 		
 		Mockito
@@ -216,13 +266,30 @@ class TransacaoServiceTest {
 	}
 	
 	@Test
+	void transacaoNaoDeveSerAtualizadaPoisElaNaoFoiCadastradaPeloUsuarioLogado() {
+		
+		TransacaoFormDto transacaoFormDto = criarTransacaoFormDtoParaAtualizacao();	
+		Usuario usuario = criarUsuario();
+		Transacao transacao = criarTransacao(transacaoFormDto, usuario);
+		Long idTransacao = 1L;
+		
+		Mockito
+		.when(transacaoRepository.getById(idTransacao))
+		.thenReturn(transacao);
+		
+		assertThrows(AccessDeniedException.class, () -> transacaoService.atualizar(idTransacao, transacaoFormDto, logado));
+		
+	}
+	
+	@Test
 	void transacaoDeveSerRemovida() {
 		
+		Transacao transacao = criarTransacao();
 		Long idTransacao = 1L;
 		
 		Mockito
 		.when(transacaoRepository.findById(idTransacao))
-		.thenReturn(Optional.of(criarTransacao(criarTransacaoFormDto())));
+		.thenReturn(Optional.of(transacao));
 		
 		transacaoService.remover(idTransacao, logado);
 		
@@ -240,6 +307,21 @@ class TransacaoServiceTest {
 		.thenThrow(EntityNotFoundException.class);
 		
 		assertThrows(EntityNotFoundException.class, () -> transacaoService.remover(idTransacao, logado));
+		
+	}
+	
+	@Test
+	void transacaoNaoDeveSerRemovidaPoisFoiCadastradaPorOutroUsuario() {
+		
+		Usuario usuario = criarUsuario();
+		Transacao transacao = criarTransacao(usuario);
+		Long idTransacao = 1L;
+		
+		Mockito
+		.when(transacaoRepository.findById(idTransacao))
+		.thenReturn(Optional.of(transacao));
+		
+		assertThrows(AccessDeniedException.class, () -> transacaoService.remover(idTransacao, logado));
 		
 	}
 
