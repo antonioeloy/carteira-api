@@ -48,7 +48,7 @@ class UsuarioServiceTest {
 		UsuarioFormDto usuarioFormDto = new UsuarioFormDto(
 				"Antonio Eloy de Oliveira Araujo", 
 				"antonio.eloy150@email.com.br",
-				1l
+				List.of(new PerfilDto(1L, "ROLE_ADMIN"))
 				);
 		return usuarioFormDto;
 	}
@@ -57,7 +57,7 @@ class UsuarioServiceTest {
 		UsuarioFormDto usuarioFormDto = new UsuarioFormDto(
 				"Antonio Eloy de Oliveira Araujo", 
 				"antonio.eloy300@email.com.br",
-				1l
+				List.of(new PerfilDto(1L, "ROLE_ADMIN"))
 				);
 		return usuarioFormDto;
 	}
@@ -88,7 +88,7 @@ class UsuarioServiceTest {
 	}
 	
 	private Perfil criarPerfil() {
-		Perfil perfil = new Perfil(null, "ROLE_ADMIN");
+		Perfil perfil = new Perfil(1L, "ROLE_ADMIN");
 		return perfil;
 	}
 	
@@ -110,7 +110,7 @@ class UsuarioServiceTest {
 		.thenReturn(usuario);
 		
 		Mockito
-		.when(perfilRepository.getById(usuarioFormDto.getPerfilId()))
+		.when(perfilRepository.getById(Mockito.any()))
 		.thenReturn(perfil);
 		
 		Mockito

@@ -69,9 +69,10 @@ public class Usuario implements UserDetails {
 		this.senha = senha;
 	}
 
-	public void atualizar(String nome, String login) {
+	public void atualizar(String nome, String login, List<Perfil> perfis) {
 		this.nome = nome;
 		this.login = login;
+		this.perfis = perfis;
 	}
 
 	@Override
@@ -110,7 +111,9 @@ public class Usuario implements UserDetails {
 	}
 
 	public void adicionarPerfil(Perfil perfil) {
-		this.perfis.add(perfil);
+		if (!perfis.contains(perfil)) {
+			this.perfis.add(perfil);
+		}
 	}
 	
 }

@@ -1,6 +1,8 @@
 package br.com.alura.carteira.service;
 
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -52,8 +54,10 @@ public class UsuarioService {
 		Usuario usuario = modelMapper.map(usuarioFormDto, Usuario.class);
 		usuario.setId(null);
 		
-		Perfil perfil = perfilRepository.getById(usuarioFormDto.getPerfilId());
-		usuario.adicionarPerfil(perfil);
+		usuarioFormDto.getPerfisDto().forEach(perfilDto -> {
+			Perfil perfil = perfilRepository.getById(perfilDto.getId());
+			usuario.adicionarPerfil(perfil);
+		});
 		
 		String senha = new Random().nextInt(100000) + "";
 		usuario.setSenha(bCryptPasswordEncoder.encode(senha));
@@ -65,21 +69,34 @@ public class UsuarioService {
 	}
 	
 	public UsuarioDetalhadoDto retornar(Long id) {
+		
 		Usuario usuario = usuarioRepository
 				.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException());
+		
 		return modelMapper.map(usuario, UsuarioDetalhadoDto.class);
+		
 	}
 
 	@Transactional
 	public UsuarioDetalhadoDto atualizar(Long id, UsuarioFormDto usuarioFormDto) {
+		
 		Usuario usuario = usuarioRepository.getById(id);
+		
+		List<Perfil> perfis = usuarioFormDto.getPerfisDto().stream()
+				.map(perfilDto -> perfilRepository.getById(perfilDto.getId()))
+				.collect(Collectors.toList());
+		
 		usuario.atualizar(
 				usuarioFormDto.getNome(), 
-				usuarioFormDto.getLogin()
+				usuarioFormDto.getLogin(),
+				perfis
 				);
+		
 		usuarioRepository.save(usuario);
+		
 		return modelMapper.map(usuario, UsuarioDetalhadoDto.class);
+		
 	}
 
 	@Transactional

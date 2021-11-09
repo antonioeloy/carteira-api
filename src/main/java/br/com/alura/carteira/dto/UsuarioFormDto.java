@@ -1,7 +1,9 @@
 package br.com.alura.carteira.dto;
 
+import java.util.List;
+
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,8 +21,8 @@ public class UsuarioFormDto {
 	
 	@NotBlank
 	private String login;
-	
-	@NotNull
-	private Long perfilId;
+
+	@NotEmpty
+	private List<PerfilDto> perfisDto;
 	
 }
