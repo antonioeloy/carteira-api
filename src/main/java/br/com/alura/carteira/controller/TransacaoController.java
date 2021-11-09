@@ -3,6 +3,7 @@ package br.com.alura.carteira.controller;
 import java.net.URI;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -60,7 +61,7 @@ public class TransacaoController {
 	
 	@PutMapping("/{id}")
 	@ApiOperation("Atualizar uma transação")
-	public ResponseEntity<TransacaoDto> atualizar(@PathVariable Long id, 
+	public ResponseEntity<TransacaoDto> atualizar(@PathVariable @NotNull Long id, 
 			@RequestBody @Valid TransacaoFormDto transacaoFormDto,
 			@ApiIgnore @AuthenticationPrincipal Usuario logado) {
 		TransacaoDto transacaoDto = transacaoService.atualizar(id, transacaoFormDto, logado);
@@ -69,7 +70,7 @@ public class TransacaoController {
 	
 	@DeleteMapping("/{id}")
 	@ApiOperation("Remover uma transação")
-	public ResponseEntity<Object> remover(@PathVariable Long id, 
+	public ResponseEntity<Object> remover(@PathVariable @NotNull Long id, 
 			@ApiIgnore @AuthenticationPrincipal Usuario logado) {
 		transacaoService.remover(id, logado);
 		return ResponseEntity.noContent().build();
@@ -77,7 +78,7 @@ public class TransacaoController {
 	
 	@GetMapping("/{id}")
 	@ApiOperation("Detalhar uma transação")
-	public ResponseEntity<TransacaoDetalhadaDto> detalhar(@PathVariable Long id, 
+	public ResponseEntity<TransacaoDetalhadaDto> detalhar(@PathVariable @NotNull Long id, 
 			@ApiIgnore @AuthenticationPrincipal Usuario logado) {
 		TransacaoDetalhadaDto transacaoDetalhadaDto = transacaoService.detalhar(id, logado);
 		return ResponseEntity.ok(transacaoDetalhadaDto);

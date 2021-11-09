@@ -3,6 +3,7 @@ package br.com.alura.carteira.controller;
 import java.net.URI;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,21 +55,21 @@ public class UsuarioController {
 	
 	@PutMapping("/{id}")
 	@ApiOperation("Atualizar um usuário")
-	public ResponseEntity<UsuarioDto> atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioFormDto usuarioFormDto) {
+	public ResponseEntity<UsuarioDto> atualizar(@PathVariable @NotNull Long id, @RequestBody @Valid UsuarioFormDto usuarioFormDto) {
 		UsuarioDto usuarioDto = usuarioService.atualizar(id, usuarioFormDto);
 		return ResponseEntity.ok(usuarioDto);
 	}
 	
 	@GetMapping("/{id}")
 	@ApiOperation("Retornar um usuário")
-	public ResponseEntity<UsuarioDto> retornar(@PathVariable Long id) {
+	public ResponseEntity<UsuarioDto> retornar(@PathVariable @NotNull Long id) {
 		UsuarioDto usuarioDto = usuarioService.retornar(id);
 		return ResponseEntity.ok(usuarioDto);
 	}
 	
 	@DeleteMapping("/{id}")
 	@ApiOperation("Remover um usuário")
-	public ResponseEntity<Object> remover(@PathVariable Long id) {
+	public ResponseEntity<Object> remover(@PathVariable @NotNull Long id) {
 		usuarioService.remover(id);
 		return ResponseEntity.noContent().build();
 	}
