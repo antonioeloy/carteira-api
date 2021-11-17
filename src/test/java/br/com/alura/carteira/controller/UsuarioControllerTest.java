@@ -5,6 +5,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +22,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import br.com.alura.carteira.dto.PerfilDto;
+import br.com.alura.carteira.dto.UsuarioFormDto;
 import br.com.alura.carteira.infra.security.TokenService;
 import br.com.alura.carteira.modelo.Perfil;
 import br.com.alura.carteira.modelo.Usuario;
@@ -46,6 +53,8 @@ class UsuarioControllerTest {
 	
 	private String token;
 	
+	private ObjectMapper objectMapper = new ObjectMapper();
+	
 	@BeforeEach
 	private void gerarToken() {
 		Usuario logado = new Usuario("Antonio", "antonio", "123456");
@@ -60,7 +69,8 @@ class UsuarioControllerTest {
 	@Test
 	void naoDeveriaCadastrarUsuarioComDadosIncompletos() throws Exception {
 		
-		String json = "{}";
+		UsuarioFormDto usuarioFormDto = new UsuarioFormDto();		
+		String json = objectMapper.writeValueAsString(usuarioFormDto);
 		
 		mvc
 		.perform(
@@ -78,7 +88,10 @@ class UsuarioControllerTest {
 	@Test
 	void deveriaCadastrarUsuarioComDadosCompletos() throws Exception {
 		
-		String json = "{\"nome\": \"Antonio Eloy\", \"login\": \"antonio.eloy@email.com.br\", \"perfilId\": 2}";
+		PerfilDto perfilDto = new PerfilDto(2L, "ROLE_COMUM");
+		List<PerfilDto> listaPerfisDto = Arrays.asList(perfilDto);
+		UsuarioFormDto usuarioFormDto = new UsuarioFormDto("Antonio Eloy", "antonio.eloy@email.com.br", listaPerfisDto);
+		String json = objectMapper.writeValueAsString(usuarioFormDto);
 		
 		String jsonRetorno = "{\"nome\": \"Antonio Eloy\", \"login\": \"antonio.eloy@email.com.br\"}";
 		
@@ -104,7 +117,10 @@ class UsuarioControllerTest {
 	@Test
 	void naoDeveriaCadastrarUsuarioComLoginJaEmUso() throws Exception {
 		
-		String json = "{\"nome\": \"Antonio Eloy\", \"login\": \"antonio\", \"perfilId\": 2}";
+		PerfilDto perfilDto = new PerfilDto(1L, "ROLE_ADMIN");
+		List<PerfilDto> listaPerfisDto = Arrays.asList(perfilDto);
+		UsuarioFormDto usuarioFormDto = new UsuarioFormDto("Antonio", "antonio", listaPerfisDto);
+		String json = objectMapper.writeValueAsString(usuarioFormDto);
 		
 		mvc
 		.perform(
