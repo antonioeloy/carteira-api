@@ -1,13 +1,19 @@
-version: '3.6'
+version: '3'
+
 services:
-    mysqldb:
+
+    carteira_database:
         image: mysql:8.0
-        environment:
-            - MYSQL_ROOT_PASSWORD=root
-            - MYSQL_DATABASE=carteira
+        restart: always
         ports:
             - 3306:3306
-    application:
+        env_file:
+            - carteira_database.env
+            
+    carteira_app:
         build: .
+        restart: always
         ports:
             - 8080:8080
+        env_file:
+            - carteira_app.env

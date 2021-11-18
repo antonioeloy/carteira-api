@@ -6,12 +6,12 @@ COPY pom.xml /build/
 COPY src /build/src/
 
 WORKDIR /build/
-RUN mvn package
+RUN mvn clean package -DskipTests
 
 FROM openjdk:11-jre-slim
 
 WORKDIR /app
 
-COPY --from=MAVEN_BUILD /build/target/carteira-api-1.0.jar /app/
+COPY --from=MAVEN_BUILD /build/target/*.jar /app/carteira-api.jar
 
-ENTRYPOINT ["java", "-jar", "carteira-api-1.0.jar"]
+CMD java -XX:+UseContainerSupport -jar carteira-api.jar
