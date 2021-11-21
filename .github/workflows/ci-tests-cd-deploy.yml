@@ -46,7 +46,7 @@ jobs:
                 restore-keys: ${{ runner.os }}-m2
             
             - name: Gerar build
-            run: mvn clean package -DskipTests
+              run: mvn clean package -DskipTests
             
             - name: Deploy no Heroku
             uses: akhileshns/heroku-deploy@v3.12.12
