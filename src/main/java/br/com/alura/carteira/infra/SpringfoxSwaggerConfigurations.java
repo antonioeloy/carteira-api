@@ -41,7 +41,7 @@ public class SpringfoxSwaggerConfigurations {
 	      "carteira-api", 
 	      "API REST com Spring Boot para um sistema de registro de transações no mercado financeiro.", 
 	      "Versão 1.0", 
-	      "https://github.com/antonioeloy/carteira-api/blob/master/README.md", 
+	      null, 
 	      new Contact("Antonio Eloy", "https://github.com/antonioeloy", "antonioeloy14@gmail.com"), 
 	      "MIT License", "https://github.com/antonioeloy/carteira-api/blob/master/LICENSE", Collections.emptyList());
 	}
