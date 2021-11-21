@@ -96,12 +96,6 @@
 		    <groupId>org.flywaydb</groupId>
 		    <artifactId>flyway-core</artifactId>
 		</dependency>
-		
- 			<!-- H2 -->
-<!-- 		<dependency> -->
-<!-- 		    <groupId>com.h2database</groupId> -->
-<!-- 		    <artifactId>h2</artifactId> -->
-<!-- 		</dependency> -->
 
 		<!-- Springfox implementation of the Swagger specification  -->
 		<dependency>
@@ -129,6 +123,12 @@
 		    <groupId>io.jsonwebtoken</groupId>
 		    <artifactId>jjwt</artifactId>
 		    <version>0.9.1</version>
+		</dependency>
+		
+		<!-- H2 Database -->
+		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
 		</dependency>
 		
 	</dependencies>
