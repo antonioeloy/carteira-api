@@ -5,7 +5,7 @@
 # :computer: carteira-api
 API REST com Spring Boot para um sistema de registro de transações no mercado financeiro.
 
-Este projeto está sendo desenvolvido ao longo do Bootcamp Java Alura 2021.
+Este projeto foi desenvolvido ao longo do Bootcamp Java Alura 2021.
 
 ### :bookmark_tabs: Tabela de conteúdos
 * [Status do projeto](#status)
@@ -18,12 +18,12 @@ Este projeto está sendo desenvolvido ao longo do Bootcamp Java Alura 2021.
 
 <a name="status"/></a>
 ### :hourglass: Status do projeto
-Em desenvolvimento.
+Concluído.
 
 <a name="tecnologias"/></a>
 ### :hammer_and_wrench: Tecnologias
 
-As seguintes tecnologias e ferramentas são utilizadas no desenvolvimento deste projeto:
+As seguintes tecnologias e ferramentas foram utilizadas no desenvolvimento deste projeto:
 
 - [Java](https://www.oracle.com/java/)
 - [Spring Boot](https://spring.io/projects/spring-boot)
