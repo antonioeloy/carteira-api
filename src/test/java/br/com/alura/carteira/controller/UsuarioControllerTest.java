@@ -90,7 +90,7 @@ class UsuarioControllerTest {
 		
 		PerfilDto perfilDto = new PerfilDto(2L, "ROLE_COMUM");
 		List<PerfilDto> listaPerfisDto = Arrays.asList(perfilDto);
-		UsuarioFormDto usuarioFormDto = new UsuarioFormDto("Antonio Eloy", "antonio.eloy@email.com.br", listaPerfisDto);
+		UsuarioFormDto usuarioFormDto = new UsuarioFormDto("Antonio Eloy", "antonio.eloy@email.com.br", "antonio.eloy@email.com.br", listaPerfisDto);
 		String json = objectMapper.writeValueAsString(usuarioFormDto);
 		
 		String jsonRetorno = "{\"nome\": \"Antonio Eloy\", \"login\": \"antonio.eloy@email.com.br\"}";
@@ -119,7 +119,7 @@ class UsuarioControllerTest {
 		
 		PerfilDto perfilDto = new PerfilDto(1L, "ROLE_ADMIN");
 		List<PerfilDto> listaPerfisDto = Arrays.asList(perfilDto);
-		UsuarioFormDto usuarioFormDto = new UsuarioFormDto("Antonio", "antonio", listaPerfisDto);
+		UsuarioFormDto usuarioFormDto = new UsuarioFormDto("Antonio", "antonio", "antonio.eloy@email.com.br", listaPerfisDto);
 		String json = objectMapper.writeValueAsString(usuarioFormDto);
 		
 		mvc

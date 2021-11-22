@@ -2,6 +2,7 @@ package br.com.alura.carteira.dto;
 
 import java.util.List;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
@@ -21,6 +22,10 @@ public class UsuarioFormDto {
 	
 	@NotBlank
 	private String login;
+	
+	@NotBlank
+	@Email
+	private String email;
 
 	@NotEmpty
 	private List<PerfilDto> perfisDto;

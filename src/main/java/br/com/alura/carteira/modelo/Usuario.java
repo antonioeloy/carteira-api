@@ -56,6 +56,8 @@ public class Usuario implements UserDetails {
 	@Exclude
 	private String senha;
 	
+	private String email;
+	
 	public Usuario(Long id, String nome, String login, String senha) {
 		this.id = id;
 		this.nome = nome;

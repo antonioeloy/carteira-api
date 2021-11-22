@@ -48,6 +48,7 @@ class UsuarioServiceTest {
 		UsuarioFormDto usuarioFormDto = new UsuarioFormDto(
 				"Antonio Eloy de Oliveira Araujo", 
 				"antonio.eloy150@email.com.br",
+				"antonio.eloy150@email.com.br",
 				List.of(new PerfilDto(1L, "ROLE_ADMIN"))
 				);
 		return usuarioFormDto;
@@ -56,6 +57,7 @@ class UsuarioServiceTest {
 	private UsuarioFormDto criarUsuarioFormDtoAtualizado() {
 		UsuarioFormDto usuarioFormDto = new UsuarioFormDto(
 				"Antonio Eloy de Oliveira Araujo", 
+				"antonio.eloy300@email.com.br",
 				"antonio.eloy300@email.com.br",
 				List.of(new PerfilDto(1L, "ROLE_ADMIN"))
 				);
