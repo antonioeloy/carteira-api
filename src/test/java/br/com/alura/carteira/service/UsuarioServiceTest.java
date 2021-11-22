@@ -20,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import br.com.alura.carteira.dto.PerfilDto;
 import br.com.alura.carteira.dto.UsuarioDetalhadoDto;
 import br.com.alura.carteira.dto.UsuarioFormDto;
+import br.com.alura.carteira.infra.EnviadorDeEmail;
 import br.com.alura.carteira.modelo.Perfil;
 import br.com.alura.carteira.modelo.Transacao;
 import br.com.alura.carteira.modelo.Usuario;
@@ -40,6 +41,9 @@ class UsuarioServiceTest {
 	
 	@Mock
 	private ModelMapper modelMapper;
+	
+	@Mock
+	private EnviadorDeEmail enviadorDeEmail;
 	
 	@InjectMocks
 	private UsuarioService usuarioService;
@@ -122,6 +126,8 @@ class UsuarioServiceTest {
 		usuarioDetalhadoDto = usuarioService.cadastrar(usuarioFormDto);
 		
 		Mockito.verify(usuarioRepository).save(Mockito.any());
+		
+		Mockito.verify(enviadorDeEmail).enviarEmail(Mockito.any(), Mockito.any(), Mockito.any());
 		
 		assertEquals(usuarioFormDto.getNome(), usuarioDetalhadoDto.getNome());
 		assertEquals(usuarioFormDto.getLogin(), usuarioDetalhadoDto.getLogin());
