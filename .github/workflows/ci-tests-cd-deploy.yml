@@ -1,4 +1,4 @@
-name: Executar testes automatizados
+name: CI/CD
 
 on:
     push:
