@@ -7,13 +7,18 @@ services:
         restart: always
         ports:
             - 3306:3306
-        env_file:
-            - carteira_database.env
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=carteira_homolog
             
     carteira_app:
         build: .
         restart: always
         ports:
             - 8080:8080
-        env_file:
-            - carteira_app.env
+        environment:
+            - DATASOURCE_URL=jdbc:mysql://carteira_database:3306/carteira_homolog
+            - DATASOURCE_USERNAME=root
+            - DATASOURCE_PASSWORD=root
+            - SPRING_PROFILES_ACTIVE=homolog
+            - JJWT_SECRET=vVJGqdYWLJkUqfQDLsMV5ZyGGJNg6Rc9dqD4pyyXu7N6WzQBPmtqNj9WmgpbdEebDFQtnGcBft6TMPRUYWf9UqwaeGkp9HYnEBDQbr4HhUH6Cs7wm9YYyYUTRR2Rsp7E747ahjV3C5QmJdKpxyvHsF2jMKR3PeLySBCFeD2nyCJB3kXFzeJH2834NRmFEcZWGgt9W5nnjm3Q3n2HTtN7hT7rfdgGkBH7bEzmpZMdujj5RMM2h4HPPYjN4cDNRjQb
